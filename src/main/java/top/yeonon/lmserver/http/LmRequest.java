@@ -175,7 +175,7 @@ public class LmRequest {
             this.headers.put(entry.getKey(), entry.getValue());
         }
 
-        final String cookieString = this.headers.get(HttpHeadersNames.COOKIE);
+        final String cookieString = this.headers.get(HttpHeaderNames.COOKIE.toString());
         if (StringUtils.isNotBlank(cookieString)) {
             final Set<Cookie> cookies = ServerCookieDecoder.LAX.decode(cookieString);
             for (Cookie cookie : cookies) {
@@ -225,9 +225,9 @@ public class LmRequest {
         return true;
     }
 
-    public boolean isXWWWFORM() {
+    public boolean isXWwwFormUrlencoded() {
 
-        String contentTypeValue = this.getHeader(HttpHeadersNames.CONTENT_TYPE);
+        String contentTypeValue = this.getHeader("Content-Type");
         if (StringUtils.isBlank(contentTypeValue)) {
             return false;
         }
