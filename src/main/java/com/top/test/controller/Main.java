@@ -1,7 +1,6 @@
 package com.top.test.controller;
 
 import top.yeonon.lmserver.LmServerStarter;
-import top.yeonon.lmserver.ServerConfig;
 
 /**
  * @Author yeonon
@@ -11,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        LmServerStarter.run(9000);
+        LmServerStarter.run();
 
     }
 }

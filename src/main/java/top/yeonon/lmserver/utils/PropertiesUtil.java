@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -13,7 +12,7 @@ import java.util.Properties;
  * @Author yeonon
  * @date 2018/5/23 0023 14:02
  **/
-public class PropertiesUtil {
+public final class PropertiesUtil {
 
     private static final Logger log = LoggerFactory.getLogger(PropertiesUtil.class);
 

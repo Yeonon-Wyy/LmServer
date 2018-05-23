@@ -161,6 +161,68 @@ public class LmRequest {
         return params.get(paramName);
     }
 
+
+    /**
+     * 获取String类型的参数值
+     *
+     * @param paramName 参数名
+     * @return String类型参数值
+     */
+    public String getStringParam(String paramName) {
+        Object paramValue = this.getParam(paramName);
+        return (String) paramValue;
+    }
+
+    /**
+     * 获取Double类型的值
+     * @param paramName 参数名
+     * @return Double类型的参数值
+     */
+    public Double getDoubleParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        return Double.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Integer类型的值
+     * @param paramName 参数名
+     * @return Integer类型的参数值
+     */
+    public Integer getIntegerParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        return Integer.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Long类型的值
+     * @param paramName 参数名
+     * @return Long类型的参数值
+     */
+    public Long getLongParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        return Long.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Float类型的值
+     * @param paramName 参数名
+     * @return Float类型的参数值
+     */
+    public Float getFloatParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        return Float.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Boolean类型的值
+     * @param paramName 参数名
+     * @return Boolean类型的参数值
+     */
+    public Boolean getBooleanParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        return Boolean.valueOf(paramValue);
+    }
+
     /**
      * 获取请求路径
      * @return 路径
@@ -283,10 +345,18 @@ public class LmRequest {
      * @return
      */
 
+/**-----------------------------------------------------------------------------------------------------------------------------*/
+
+
+    /**
+     * 构建LmRequest
+     * @param ctx ChannelHandlerContext
+     * @param nettyRequest FullHttpRequest
+     * @return LmRequest
+     */
     public static LmRequest build(ChannelHandlerContext ctx, FullHttpRequest nettyRequest) {
         return new LmRequest(ctx, nettyRequest);
     }
-
 
 
 }

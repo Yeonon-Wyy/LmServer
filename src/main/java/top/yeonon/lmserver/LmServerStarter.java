@@ -55,13 +55,13 @@ public class LmServerStarter {
         group.shutdownGracefully();
     }
 
-    public static void run(int port) {
+    public static void run() {
         //log4j 配置项
         BasicConfigurator.configure();
 
-        new ServerConfig();
+        LmServerConfig serverConfig = new LmServerConfig();
 
-        LmServerStarter starter = new LmServerStarter(port);
+        LmServerStarter starter = new LmServerStarter(serverConfig.getServerPort());
         ChannelFuture future = starter.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(starter::stop));

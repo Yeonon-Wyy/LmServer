@@ -20,8 +20,8 @@ public class TestController {
 
     @RequestMapping("/user")
     public User getUser(LmRequest request) {
-        Long id = Long.valueOf((String) request.getParam("id"));
-        String name = (String) request.getParam("name");
+        Long id = request.getLongParam("id");
+        String name =  request.getStringParam("name");
 
         if (id == null || name == null) {
             return null;
