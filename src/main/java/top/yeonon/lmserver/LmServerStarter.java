@@ -6,10 +6,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.log4j.BasicConfigurator;
-import top.yeonon.lmserver.handler.TestHandler;
-import top.yeonon.lmserver.utils.ClassUtil;
+import top.yeonon.lmserver.handler.LmHandler;
 
 import java.net.InetSocketAddress;
 
@@ -41,7 +39,7 @@ public class LmServerStarter {
                         pipeline.addLast(new HttpServerCodec());
 //                        pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
-                        pipeline.addLast(new TestHandler());
+                        pipeline.addLast(new LmHandler());
                     }
                 });
         ChannelFuture future = serverBootstrap.bind(new InetSocketAddress(port));
@@ -58,21 +56,16 @@ public class LmServerStarter {
     }
 
     public static void run(int port) {
+        //log4j 配置项
         BasicConfigurator.configure();
+
+        new ServerConfig();
+
         LmServerStarter starter = new LmServerStarter(port);
         ChannelFuture future = starter.start();
-
-        //TODO 应该用类加载器加载Config类，现在先简单New
-        new ServerConfig();
 
         Runtime.getRuntime().addShutdownHook(new Thread(starter::stop));
 
         future.channel().closeFuture().syncUninterruptibly();
     }
-
-    public static void main(String[] args) {
-        LmServerStarter.run(9000);
-    }
-
-
 }

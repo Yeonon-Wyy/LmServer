@@ -161,6 +161,14 @@ public class LmRequest {
         return params.get(paramName);
     }
 
+    /**
+     * 获取请求路径
+     * @return 路径
+     */
+    public String getPath() {
+        return this.path;
+    }
+
 
 
     // 请求头相关(包含cookie)

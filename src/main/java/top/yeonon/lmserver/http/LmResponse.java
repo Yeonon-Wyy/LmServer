@@ -197,6 +197,7 @@ public class LmResponse {
         return this;
     }
 
+
     /**
      * 转换成Netty支持的Response
      * @return response
@@ -243,6 +244,17 @@ public class LmResponse {
             future.addListener(ChannelFutureListener.CLOSE);
         }
 
+        return future;
+    }
+
+
+    public ChannelFuture sendError(String errMsg, HttpResponseStatus status) {
+        this.setContent(errMsg);
+        setStatus(status);
+        ctx.write(toFullHttpResponse());
+        ChannelFuture future =  ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        //错误了应该是要关闭channel的
+        future.addListener(ChannelFutureListener.CLOSE);
         return future;
     }
 
