@@ -14,11 +14,11 @@ public class MyFilter implements LmFilter {
 
     @Override
     public void before(LmRequest request) {
-        System.out.println("my filter");
+        System.out.println("my filter before");
     }
 
     @Override
     public void after(LmResponse response) {
-
+        System.out.println("my filter after");
     }
 }

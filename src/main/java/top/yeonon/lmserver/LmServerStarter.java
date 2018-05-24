@@ -39,7 +39,6 @@ public class LmServerStarter {
                         pipeline.addLast(new HttpServerCodec());
 //                        pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
-                        pipeline.addLast(new LmInFilterHandler());
                         pipeline.addLast(new LmServerHandler());
                     }
                 });

@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.controller.LmControllerDiscover;
 import top.yeonon.lmserver.controller.LmHttpHandler;
+import top.yeonon.lmserver.filter.LmFilter;
+import top.yeonon.lmserver.filter.LmFilterDiscover;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
@@ -30,9 +32,13 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
         LmResponse response = LmResponse.build(ctx, request);
 
-
+        //获取请求辣眼睛
         String path = request.getPath();
         LmHttpHandler handler = LmControllerDiscover.getHandler(path.trim());
+        LmFilter filter = LmFilterDiscover.getFilter(path);
+
+        //执行前置filter
+        doBeforeFilter(filter, request);
 
         if (handler != null) {
             //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
@@ -49,6 +55,34 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
             //handler为null，即没有url映射，这个时候应该返回404错误
             response.sendError("404 Not Found", HttpResponseStatus.NOT_FOUND);
         }
+
+        //执行后置filter
+        doAfterFilter(filter, response);
+
+    }
+
+    /**
+     * 在执行业务逻辑之前执行
+     * @param filter 过滤器
+     * @param lmRequest 请求
+     */
+    private void doBeforeFilter(LmFilter filter, LmRequest lmRequest) {
+        if (filter == null) {
+            return;
+        }
+        filter.before(lmRequest);
+    }
+
+    /**
+     * 在执行业务逻辑之后
+     * @param filter 过滤器
+     * @param lmResponse 响应
+     */
+    private void doAfterFilter(LmFilter filter, LmResponse lmResponse) {
+        if (filter == null) {
+            return;
+        }
+        filter.after(lmResponse);
     }
 
     /**
