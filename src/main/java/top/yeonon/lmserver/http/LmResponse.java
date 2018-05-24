@@ -5,13 +5,20 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.DefaultFileRegion;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.util.CharsetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +27,8 @@ import java.util.Set;
  * @date 2018/5/20 0020 20:26
  **/
 public class LmResponse {
+
+    private static final Logger log = LoggerFactory.getLogger(LmResponse.class);
 
     /**
      * Content-Type的值常量
@@ -197,6 +206,11 @@ public class LmResponse {
         return this;
     }
 
+    public LmResponse setContent(File file) {
+        this.content = file;
+        return this;
+    }
+
 
     /**
      * 转换成Netty支持的Response
@@ -219,13 +233,53 @@ public class LmResponse {
         return fullHttpResponse;
     }
 
+    private HttpResponse toDefaultHttpResponse() {
+        final HttpResponse httpResponse = new DefaultHttpResponse(httpVersion, status);
+        //设置Headers
+        final HttpHeaders httpHeaders = httpResponse.headers();
+        httpHeaders.add(this.headers);
+
+        //设置cookies
+        for (Cookie cookie : this.cookies) {
+            httpHeaders.add(HttpHeaderNames.SET_COOKIE.toString(), ServerCookieEncoder.LAX.encode(cookie));
+        }
+        return httpResponse;
+    }
+
     /**
      * 向客户端发送消息
      * @return ChannelFuture
      */
     public ChannelFuture send() {
-        ChannelFuture future = sendFull();
+        ChannelFuture future = null;
+        if (content instanceof File) {
+            File file = (File) content;
+            try {
+                future = sendFile(file);
+            } catch (IOException e) {
+                log.error(e.toString());
+            }
+        } else {
+            future = sendFull();
+        }
         this.isSent = true;
+        return future;
+    }
+
+
+    private ChannelFuture sendFile(File file) throws IOException {
+        if (lmRequest.isKeepAlive()) {
+            setKeepAlive();
+        }
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        long fileLength = raf.length();
+        setContentLength(fileLength);
+        ctx.write(toDefaultHttpResponse());
+        ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength));
+        ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        if (!lmRequest.isKeepAlive()) {
+            future.addListener(ChannelFutureListener.CLOSE);
+        }
         return future;
     }
 
@@ -246,6 +300,8 @@ public class LmResponse {
 
         return future;
     }
+
+
 
 
     public ChannelFuture sendError(String errMsg, HttpResponseStatus status) {

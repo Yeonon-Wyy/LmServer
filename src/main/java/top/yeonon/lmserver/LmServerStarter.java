@@ -6,7 +6,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import top.yeonon.lmserver.handler.LmInFilterHandler;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import top.yeonon.lmserver.handler.LmServerHandler;
 
 import java.net.InetSocketAddress;
@@ -37,7 +37,7 @@ public class LmServerStarter {
                     protected void initChannel(Channel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new HttpServerCodec());
-//                        pipeline.addLast(new ChunkedWriteHandler());
+                        pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
                         pipeline.addLast(new LmServerHandler());
                     }
