@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        LmServerStarter.run();
+        LmServerStarter.run(Main.class);
 
     }
 }

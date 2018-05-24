@@ -1,10 +1,12 @@
 package com.top.test.controller.pojo;
 
+import java.io.Serializable;
+
 /**
  * @Author yeonon
  * @date 2018/5/23 0023 19:40
  **/
-public class User {
+public class User implements Serializable {
 
     private Long id;
 

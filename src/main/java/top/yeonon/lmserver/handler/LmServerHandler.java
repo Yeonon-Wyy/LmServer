@@ -17,9 +17,9 @@ import top.yeonon.lmserver.http.LmResponse;
  * @Author yeonon
  * @date 2018/5/23 0023 19:14
  **/
-public class LmHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final Logger log = LoggerFactory.getLogger(LmHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(LmServerHandler.class);
 
     //将对象转换成JSON格式的字符串需要用的
     private ObjectMapper objectMapper = new ObjectMapper();
