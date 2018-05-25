@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.controller.LmControllerDiscover;
 import top.yeonon.lmserver.filter.LmFilterDiscover;
+import top.yeonon.lmserver.interceptor.LmInterceptor;
+import top.yeonon.lmserver.interceptor.LmInterceptorDiscover;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
 /**
@@ -17,6 +19,7 @@ public class LmServerConfig {
 
     private String controllerPackage = PropertiesUtil.getStringProperty("controllerPackage");
     private String filterPackage = PropertiesUtil.getStringProperty("filterPackage");
+    private String interceptorPackage = PropertiesUtil.getStringProperty("interceptorPackage");
     private Integer serverPort = PropertiesUtil.getIntegerProperty("serverPort");
 
     private final Class<?> mainClass;
@@ -30,8 +33,17 @@ public class LmServerConfig {
 
         processBasePackages();
         processFilterPackages();
+        processInterceptorPackages();
         processServerPort();
 
+    }
+
+    private void processInterceptorPackages() {
+        if (!StringUtils.isBlank(interceptorPackage)) {
+            LmInterceptorDiscover.doDiscover(interceptorPackage);
+        } else {
+            LmInterceptorDiscover.doDiscover(mainClass.getPackage().getName());
+        }
     }
 
     /**

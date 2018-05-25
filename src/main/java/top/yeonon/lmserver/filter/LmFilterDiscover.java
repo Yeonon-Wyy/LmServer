@@ -2,6 +2,7 @@ package top.yeonon.lmserver.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yeonon.lmserver.annotation.Filter;
 import top.yeonon.lmserver.controller.LmControllerDiscover;
 import top.yeonon.lmserver.utils.ClassUtil;
 
@@ -25,10 +26,9 @@ public class LmFilterDiscover {
         try {
             for (Class<?> clz : classSet) {
                 if (clz != null && LmFilter.class.isAssignableFrom(clz) &&
-                        clz.isAnnotationPresent(top.yeonon.lmserver.annotation.Filter.class)) {
+                        clz.isAnnotationPresent(Filter.class)) {
                     LmFilter filterInstance = (LmFilter) clz.newInstance();
-                    top.yeonon.lmserver.annotation.Filter filter =
-                            clz.getAnnotation(top.yeonon.lmserver.annotation.Filter.class);
+                    Filter filter = clz.getAnnotation(Filter.class);
                     String[] urls = filter.value();
                     for (String url : urls) {
                         if (filterMaps.get(url) == null) {

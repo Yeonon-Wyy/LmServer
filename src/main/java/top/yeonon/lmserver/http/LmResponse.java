@@ -183,6 +183,7 @@ public class LmResponse {
      */
     public LmResponse setContent(String content) {
         this.content = Unpooled.copiedBuffer(content, CharsetUtil.UTF_8);
+        this.setContentType(ContentTypeValue.PLAIN_CONTENT);
         return this;
     }
 
@@ -193,6 +194,7 @@ public class LmResponse {
      */
     public LmResponse setContent(ByteBuf content) {
         this.content = content;
+        this.setContentType(ContentTypeValue.JSON_CONTENT);
         return this;
     }
 
@@ -203,6 +205,7 @@ public class LmResponse {
      */
     public LmResponse setContent(byte[] content) {
         this.content = Unpooled.copiedBuffer(content);
+        this.setContentType(ContentTypeValue.JSON_CONTENT);
         return this;
     }
 
