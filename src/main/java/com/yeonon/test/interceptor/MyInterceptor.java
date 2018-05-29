@@ -13,7 +13,7 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
 public class MyInterceptor implements LmInterceptor {
     @Override
     public boolean doInterceptor(LmRequest request, LmResponse response) {
-//        response.setContent("被拦截了").send();
-        return true;
+        response.setContent("被拦截了").send();
+        return false;
     }
 }

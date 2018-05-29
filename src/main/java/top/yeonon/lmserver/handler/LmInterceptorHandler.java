@@ -6,7 +6,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
-import top.yeonon.lmserver.interceptor.LmInterceptorDiscover;
+import top.yeonon.lmserver.core.ioc.discover.LmInterceptorDiscover;
 
 /**
  * @Author yeonon

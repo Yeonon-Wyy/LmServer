@@ -1,9 +1,9 @@
-package top.yeonon.lmserver.filter;
+package top.yeonon.lmserver.core.ioc.discover;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.annotation.Filter;
-import top.yeonon.lmserver.controller.LmControllerDiscover;
+import top.yeonon.lmserver.filter.LmFilter;
 import top.yeonon.lmserver.utils.ClassUtil;
 
 import java.util.HashMap;
@@ -14,13 +14,14 @@ import java.util.Set;
  * @Author yeonon
  * @date 2018/5/24 0024 16:24
  **/
-public class LmFilterDiscover {
+public class LmFilterDiscover implements Discover {
 
     private static final Logger log = LoggerFactory.getLogger(LmControllerDiscover.class);
 
     private static final Map<String, LmFilter> filterMaps = new HashMap<>();
 
-    public static void doDiscover(String packageName) {
+    @Override
+    public void doDiscover(String packageName) {
         Set<Class<?>> classSet = ClassUtil.getClassFromPackage(packageName);
 
         try {

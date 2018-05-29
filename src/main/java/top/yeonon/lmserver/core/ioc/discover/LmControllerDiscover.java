@@ -1,9 +1,10 @@
-package top.yeonon.lmserver.controller;
+package top.yeonon.lmserver.core.ioc.discover;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.annotation.Controller;
 import top.yeonon.lmserver.annotation.RequestMapping;
+import top.yeonon.lmserver.controller.LmHttpHandler;
 import top.yeonon.lmserver.utils.ClassUtil;
 
 import java.lang.reflect.Method;
@@ -17,7 +18,7 @@ import java.util.Set;
  * @Author yeonon
  * @date 2018/5/23 0023 18:19
  **/
-public class LmControllerDiscover {
+public class LmControllerDiscover implements Discover {
 
     //log4j日志
     private static final Logger log = LoggerFactory.getLogger(LmControllerDiscover.class);
@@ -29,7 +30,8 @@ public class LmControllerDiscover {
      * 调用该方法才会去扫描整个包
      * @param packageName 包名
      */
-    public static void doDiscover(String packageName) {
+    @Override
+    public void doDiscover(String packageName) {
         //扫描整个包（根据包名），返回的是类的集合（class对象）
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName);
         try {
@@ -70,8 +72,6 @@ public class LmControllerDiscover {
         }
 
     }
-
-
 
     /**
      * 根据url获得HttpHandler对象

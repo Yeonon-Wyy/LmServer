@@ -3,10 +3,7 @@ package top.yeonon.lmserver;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yeonon.lmserver.controller.LmControllerDiscover;
-import top.yeonon.lmserver.filter.LmFilterDiscover;
-import top.yeonon.lmserver.interceptor.LmInterceptor;
-import top.yeonon.lmserver.interceptor.LmInterceptorDiscover;
+import top.yeonon.lmserver.core.ioc.discover.*;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
 /**
@@ -40,9 +37,9 @@ public class LmServerConfig {
 
     private void processInterceptorPackages() {
         if (!StringUtils.isBlank(interceptorPackage)) {
-            LmInterceptorDiscover.doDiscover(interceptorPackage);
+            DiscoverFactory.getDiscover(DiscoverName.INTERCEPTOR.getCode()).doDiscover(interceptorPackage);
         } else {
-            LmInterceptorDiscover.doDiscover(mainClass.getPackage().getName());
+            DiscoverFactory.getDiscover(DiscoverName.INTERCEPTOR.getCode()).doDiscover(mainClass.getPackage().getName());
         }
     }
 
@@ -51,9 +48,9 @@ public class LmServerConfig {
      */
     private void processFilterPackages() {
         if (!StringUtils.isBlank(filterPackage)) {
-            LmFilterDiscover.doDiscover(filterPackage);
+            DiscoverFactory.getDiscover(DiscoverName.FILTER.getCode()).doDiscover(filterPackage);
         } else {
-            LmFilterDiscover.doDiscover(mainClass.getPackage().getName());
+            DiscoverFactory.getDiscover(DiscoverName.FILTER.getCode()).doDiscover(mainClass.getPackage().getName());
         }
     }
 
@@ -62,9 +59,9 @@ public class LmServerConfig {
      */
     private void processBasePackages() {
         if (!StringUtils.isBlank(controllerPackage)) {
-            LmControllerDiscover.doDiscover(controllerPackage);
+            DiscoverFactory.getDiscover(DiscoverName.CONTROLLER.getCode()).doDiscover(controllerPackage);
         } else {
-            LmControllerDiscover.doDiscover(mainClass.getPackage().getName());
+            DiscoverFactory.getDiscover(DiscoverName.CONTROLLER.getCode()).doDiscover(mainClass.getPackage().getName());
         }
     }
 

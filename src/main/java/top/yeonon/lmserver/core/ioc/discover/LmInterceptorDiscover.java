@@ -1,8 +1,9 @@
-package top.yeonon.lmserver.interceptor;
+package top.yeonon.lmserver.core.ioc.discover;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.annotation.Interceptor;
+import top.yeonon.lmserver.interceptor.LmInterceptor;
 import top.yeonon.lmserver.utils.ClassUtil;
 
 import java.util.HashMap;
@@ -13,13 +14,14 @@ import java.util.Set;
  * @Author yeonon
  * @date 2018/5/25 0025 16:09
  **/
-public class LmInterceptorDiscover {
+public class LmInterceptorDiscover implements Discover {
 
     private static final Logger log = LoggerFactory.getLogger(LmInterceptorDiscover.class);
 
     private static final Map<String, LmInterceptor> interceptorMaps = new HashMap<>();
 
-    public static void doDiscover(String packageName) {
+    @Override
+    public void doDiscover(String packageName) {
         Set<Class<?>> classSet = ClassUtil.getClassFromPackage(packageName);
 
         try {
