@@ -12,10 +12,5 @@ public class Main {
 
     public static void main(String[] args) {
         LmServerStarter.run(Main.class);
-
-//        String path = Main.class.getResource("/").getPath() + "/test.html";
-//        System.out.println(path);
-//        File file = new File(path);
-//        System.out.println(file.exists());
     }
 }
