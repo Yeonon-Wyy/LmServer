@@ -3,10 +3,10 @@ package top.yeonon.lmserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
+import top.yeonon.lmserver.core.ioc.discover.BeanDiscover;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
-import top.yeonon.lmserver.core.ioc.discover.LmInterceptorDiscover;
 
 /**
  * @Author yeonon
@@ -21,7 +21,7 @@ public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
 
         String path = request.getPath();
-        LmInterceptor interceptor = LmInterceptorDiscover.getInterceptor(path);
+        LmInterceptor interceptor = BeanDiscover.getInterceptor(path);
         boolean isPass = true;
         if (interceptor == null) {
             ctx.fireChannelRead(msg);
