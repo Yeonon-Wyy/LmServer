@@ -3,6 +3,7 @@ package top.yeonon.lmserver;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.yeonon.lmserver.core.ioc.autowire.BeanWire;
 import top.yeonon.lmserver.core.ioc.discover.*;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
@@ -30,6 +31,7 @@ public final class LmServerConfig {
 
         BeanDiscover beanDiscover = new BeanDiscover();
         beanDiscover.doDiscover(scanPackage);
+        BeanWire.doWire(BeanDiscover.getBeanMaps());
 
         //扫描controller,interceptor,filter等
 

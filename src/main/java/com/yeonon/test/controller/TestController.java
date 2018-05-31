@@ -1,8 +1,13 @@
 package com.yeonon.test.controller;
 
+import com.yeonon.test.interceptor.MyInterceptor;
+import com.yeonon.test.service.IMyService;
+import com.yeonon.test.service.MyService;
+import top.yeonon.lmserver.annotation.Autowire;
 import top.yeonon.lmserver.annotation.Controller;
 import top.yeonon.lmserver.annotation.RequestMapping;
 import top.yeonon.lmserver.http.LmRequest;
+import top.yeonon.lmserver.interceptor.LmInterceptor;
 
 /**
  * @Author yeonon
@@ -11,9 +16,11 @@ import top.yeonon.lmserver.http.LmRequest;
 @Controller
 public class TestController {
 
+    @Autowire
+    private MyService myService;
 
     @RequestMapping(value = "/test")
     public String test(LmRequest lmRequest) {
-        return "test";
+        return myService.testServeice();
     }
 }
