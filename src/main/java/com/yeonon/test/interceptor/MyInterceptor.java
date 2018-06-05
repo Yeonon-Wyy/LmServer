@@ -9,7 +9,7 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
  * @Author yeonon
  * @date 2018/5/25 0025 16:23
  **/
-@Interceptor(value = "/test")
+@Interceptor(value = "")
 public class MyInterceptor implements LmInterceptor {
     @Override
     public boolean doInterceptor(LmRequest request, LmResponse response) {

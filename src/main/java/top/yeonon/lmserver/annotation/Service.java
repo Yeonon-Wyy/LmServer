@@ -7,10 +7,11 @@ import java.lang.annotation.Target;
 
 /**
  * @Author yeonon
- * @date 2018/5/23 0023 18:20
+ * @date 2018/5/31 0031 19:40
  **/
-@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface Controller {
+public @interface Service {
+
 }

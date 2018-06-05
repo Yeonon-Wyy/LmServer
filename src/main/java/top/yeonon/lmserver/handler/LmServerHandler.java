@@ -9,10 +9,9 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.yeonon.lmserver.core.ioc.discover.LmControllerDiscover;
 import top.yeonon.lmserver.controller.LmHttpHandler;
+import top.yeonon.lmserver.core.ioc.discover.BeanDiscover;
 import top.yeonon.lmserver.filter.LmFilter;
-import top.yeonon.lmserver.core.ioc.discover.LmFilterDiscover;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
@@ -42,7 +41,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         //获取请求路径
         String path = request.getPath();
 
-        LmFilter filter = LmFilterDiscover.getFilter(path);
+        LmFilter filter = BeanDiscover.getFilter(path);
 
         //执行前置filter
         doBeforeFilter(filter, request);
@@ -79,7 +78,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @throws IllegalAccessException
      */
     private void sendNormalContent(LmRequest request, LmResponse response, String path) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
-        LmHttpHandler handler = LmControllerDiscover.getHandler(path.trim());
+        LmHttpHandler handler = BeanDiscover.getHandler(path.trim());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
         if (handler != null) {
             Object message = handler.execute(request);
