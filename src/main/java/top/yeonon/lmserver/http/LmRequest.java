@@ -200,6 +200,7 @@ public class LmRequest {
      */
     public Long getLongParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
         return Long.valueOf(paramValue);
     }
 
