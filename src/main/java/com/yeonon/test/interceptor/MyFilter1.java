@@ -10,16 +10,16 @@ import top.yeonon.lmserver.http.LmResponse;
  * @Author yeonon
  * @date 2018/6/9 0009 14:38
  **/
-@Filter(value = "/test", order = 2)
+@Filter(value = "/test", order = 1)
 public class MyFilter1 extends AbstractLmFilter {
 
     @Override
     public void before(LmRequest request) {
-        System.out.println("filter 1");
+        System.out.println("filter 1 before");
     }
 
     @Override
     public void after(LmResponse response) {
-
+        System.out.println("filter 1 after");
     }
 }

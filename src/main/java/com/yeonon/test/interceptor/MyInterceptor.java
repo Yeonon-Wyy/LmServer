@@ -14,7 +14,7 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
 public class MyInterceptor extends AbstractLmInterceptor {
     @Override
     public boolean doInterceptor(LmRequest request, LmResponse response) {
-        response.setContent("被拦截了 1").send();
+
         return true;
     }
 }

@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.core.ioc.discover;
+package top.yeonon.lmserver.core.ioc;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
 import top.yeonon.lmserver.utils.ClassUtil;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -17,9 +18,9 @@ import java.util.*;
  * @Author yeonon
  * @date 2018/5/31 0031 19:37
  **/
-public class BeanDiscover implements Discover {
+public class DefaultBeanProcessor implements BeanProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(BeanDiscover.class);
+    private static final Logger log = LoggerFactory.getLogger(DefaultBeanProcessor.class);
 
     //bean maps
     private static final Map<Class<?>, Object> beanMaps = new HashMap<>();
@@ -35,10 +36,10 @@ public class BeanDiscover implements Discover {
 
 
 
+    //核心方法
     @Override
-    public void doDiscover(String packageName) {
+    public void doProcess(String packageName) {
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName);
-
         try {
             for (Class<?> clz : classSets) {
                 if (clz != null && clz.getAnnotations() != null) {
@@ -50,7 +51,6 @@ public class BeanDiscover implements Discover {
                     }
                 }
             }
-
             processBean();
 
         } catch (IllegalAccessException | InstantiationException e) {
@@ -58,19 +58,26 @@ public class BeanDiscover implements Discover {
         }
     }
 
+    /**
+     * 处理容器中的所有Bean，主要是分类，依赖注入等
+     */
     private void processBean() {
 
         beanMaps.forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&
                     clz.isAnnotationPresent(Interceptor.class)) {
+                //如果是拦截器，则执行拦截器的处理逻辑
                 processInterceptor(clz, beanInstance);
             }
             else if (LmFilter.class.isAssignableFrom(clz) &&
                     clz.isAnnotationPresent(Filter.class)) {
+                //如果是Filter，则执行对Filter的处理逻辑
                 processFilter(clz, beanInstance);
             } else if (clz.isAnnotationPresent(Controller.class)) {
+                //如果是controller,则执行对controller的处理逻辑
                 processController(clz, beanInstance);
             }
+            processBeanWire(clz, beanInstance);
         });
 
         //处理filter顺序
@@ -84,6 +91,46 @@ public class BeanDiscover implements Discover {
         });
     }
 
+    /**
+     * 实现依赖注入
+     * @param clz 类
+     * @param beanInstance 类实例
+     */
+    private void processBeanWire(Class<?> clz, Object beanInstance) {
+        try {
+            if (clz.getAnnotations() != null) {
+                Annotation[] annotations = clz.getAnnotations();
+                for (Annotation annotation : annotations) {
+                    //判断这个类上的注解是否也是Component(注解上可以有注解)
+                    if (annotation.annotationType().isAnnotationPresent(Component.class)) {
+                        Field[] fields = clz.getDeclaredFields();
+                        //获取所有字段
+                        for (Field field : fields) {
+                            if (field.isAnnotationPresent(Autowire.class)) {
+                                field.setAccessible(true);
+                                Class<?> fieldClass = field.getType();
+
+                                if (beanMaps.get(fieldClass) != null) {
+                                    //如果容器中存在这个字段的类，则将其赋值
+                                    field.set(beanInstance, beanMaps.get(fieldClass));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            log.error(e.getCause().toString());
+        }
+
+    }
+
+
+    /**
+     * 对Controller处理
+     * @param clz 类
+     * @param beanInstance 类实例
+     */
     private void processController(Class<?> clz, Object beanInstance) {
         log.info("加载controller ： " + clz.getName());
         //实例化该类
@@ -113,6 +160,11 @@ public class BeanDiscover implements Discover {
     }
 
 
+    /**
+     * 处理Interceptor
+     * @param clz 类
+     * @param beanInstance 类实例
+     */
     private void processInterceptor(Class<?> clz, Object beanInstance) {
         LmInterceptor interceptorInstance = (LmInterceptor) beanInstance;
         Interceptor interceptor = clz.getAnnotation(Interceptor.class);
@@ -127,6 +179,11 @@ public class BeanDiscover implements Discover {
         }
     }
 
+    /**
+     * 处理Filter
+     * @param clz 类
+     * @param beanInstance 类实例
+     */
     private void processFilter(Class<?> clz, Object beanInstance) {
         LmFilter filterInstance = (LmFilter) beanInstance;
         Filter filter = clz.getAnnotation(Filter.class);

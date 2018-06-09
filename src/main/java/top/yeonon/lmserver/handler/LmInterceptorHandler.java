@@ -3,7 +3,7 @@ package top.yeonon.lmserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
-import top.yeonon.lmserver.core.ioc.discover.BeanDiscover;
+import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
@@ -22,7 +22,7 @@ public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
 
         String path = request.getPath();
-        List<LmInterceptor> interceptors = BeanDiscover.getInterceptor(path);
+        List<LmInterceptor> interceptors = DefaultBeanProcessor.getInterceptor(path);
         boolean isPass = true;
         if (interceptors == null) {
             ctx.fireChannelRead(msg);

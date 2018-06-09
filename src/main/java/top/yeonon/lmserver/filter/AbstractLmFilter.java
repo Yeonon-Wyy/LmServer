@@ -21,6 +21,11 @@ public class AbstractLmFilter implements LmFilter {
 
     }
 
+    /**
+     * 排序的时候会默认使用这个方法
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(LmFilter o) {
         Filter filter1 = this.getClass().getAnnotation(Filter.class);

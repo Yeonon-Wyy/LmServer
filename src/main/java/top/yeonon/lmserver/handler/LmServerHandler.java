@@ -10,15 +10,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.yeonon.lmserver.controller.LmHttpHandler;
-import top.yeonon.lmserver.core.ioc.discover.BeanDiscover;
+import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.filter.LmFilter;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * 属于Netty框架下的的handler，处于进站方向的最后一个
@@ -43,7 +43,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         //获取请求路径
         String path = request.getPath();
 
-        List<LmFilter> filters = BeanDiscover.getFilter(path);
+        List<LmFilter> filters = DefaultBeanProcessor.getFilter(path);
 
         //执行前置filter
         doBeforeFilter(filters, request);
@@ -59,6 +59,12 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
     }
 
+    /**
+     * 发送HTML静态内容
+     * @param request 请求
+     * @param response 响应
+     * @param path HTML所在路径
+     */
     private void sendHtml(LmRequest request, LmResponse response, String path) {
         String fileName = LmServerHandler.class.getResource("/").getPath() + STATIC_PATH + path;
         File file = new File(fileName);
@@ -80,7 +86,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @throws IllegalAccessException
      */
     private void sendNormalContent(LmRequest request, LmResponse response, String path) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
-        LmHttpHandler handler = BeanDiscover.getHandler(path.trim());
+        LmHttpHandler handler = DefaultBeanProcessor.getHandler(path.trim());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
         if (handler != null) {
             Object message = handler.execute(request);
@@ -118,9 +124,17 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
      */
     private void doAfterFilter(List<LmFilter> filters, LmResponse lmResponse) {
         if (filters == null) return;
-        for (LmFilter filter : filters) {
-            filter.after(lmResponse);
+        //这里要方向遍历
+
+        //只能使用迭代器多遍历一次来实现，因为不能更改list的顺序，否则会在其他地方增加开销
+        ListIterator<LmFilter> li = filters.listIterator();
+        while (li.hasNext()) {
+            li.next();
         }
+        while (li.hasPrevious()) {
+            li.previous().after(lmResponse);
+        }
+
     }
 
     /**

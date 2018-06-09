@@ -9,7 +9,15 @@ import top.yeonon.lmserver.http.LmResponse;
  **/
 public interface LmFilter extends Comparable<LmFilter> {
 
+    /**
+     * 在业务逻辑之前
+     * @param request 请求
+     */
     void before(LmRequest request);
 
+    /**
+     * 在业务逻辑之后
+     * @param response 响应
+     */
     void after(LmResponse response);
 }
