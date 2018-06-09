@@ -14,7 +14,6 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
  **/
 public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
 
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;

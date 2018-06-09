@@ -17,6 +17,8 @@ import top.yeonon.lmserver.http.LmResponse;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 属于Netty框架下的的handler，处于进站方向的最后一个
@@ -41,10 +43,10 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         //获取请求路径
         String path = request.getPath();
 
-        LmFilter filter = BeanDiscover.getFilter(path);
+        List<LmFilter> filters = BeanDiscover.getFilter(path);
 
         //执行前置filter
-        doBeforeFilter(filter, request);
+        doBeforeFilter(filters, request);
 
         if (StringUtils.isNotBlank(path) && path.endsWith(".html")) {
             sendHtml(request, response, path);
@@ -53,7 +55,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         }
 
         //执行后置filter
-        doAfterFilter(filter, response);
+        doAfterFilter(filters, response);
 
     }
 
@@ -99,26 +101,26 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
     /**
      * 在执行业务逻辑之前执行
-     * @param filter 过滤器
+     * @param filters 过滤器
      * @param lmRequest 请求
      */
-    private void doBeforeFilter(LmFilter filter, LmRequest lmRequest) {
-        if (filter == null) {
-            return;
+    private void doBeforeFilter(List<LmFilter> filters, LmRequest lmRequest) {
+        if (filters == null) return;
+        for (LmFilter filter : filters) {
+            filter.before(lmRequest);
         }
-        filter.before(lmRequest);
     }
 
     /**
      * 在执行业务逻辑之后
-     * @param filter 过滤器
+     * @param filters 过滤器
      * @param lmResponse 响应
      */
-    private void doAfterFilter(LmFilter filter, LmResponse lmResponse) {
-        if (filter == null) {
-            return;
+    private void doAfterFilter(List<LmFilter> filters, LmResponse lmResponse) {
+        if (filters == null) return;
+        for (LmFilter filter : filters) {
+            filter.after(lmResponse);
         }
-        filter.after(lmResponse);
     }
 
     /**

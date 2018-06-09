@@ -15,5 +15,6 @@ import java.lang.annotation.Target;
 public @interface Filter {
     String[] value();
 
+    int order() default 0;
 
 }
