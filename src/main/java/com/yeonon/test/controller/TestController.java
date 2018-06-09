@@ -20,7 +20,9 @@ public class TestController {
     private MyService myService;
 
     @RequestMapping(value = "/test")
-    public String test(LmRequest lmRequest) {
+    public String test(LmRequest lmRequest, Long id) {
+        System.out.println(lmRequest);
+        System.out.println(id);
         return myService.testServeice();
     }
 }

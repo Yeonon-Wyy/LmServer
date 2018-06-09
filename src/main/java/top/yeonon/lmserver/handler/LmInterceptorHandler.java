@@ -8,12 +8,13 @@ import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
 
+import java.util.List;
+
 /**
  * @Author yeonon
  * @date 2018/5/25 0025 16:17
  **/
 public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
-
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -21,13 +22,16 @@ public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
 
         String path = request.getPath();
-        LmInterceptor interceptor = BeanDiscover.getInterceptor(path);
+        List<LmInterceptor> interceptors = BeanDiscover.getInterceptor(path);
         boolean isPass = true;
-        if (interceptor == null) {
+        if (interceptors == null) {
             ctx.fireChannelRead(msg);
         } else {
             LmResponse response = LmResponse.build(ctx, request);
-            isPass = interceptor.doInterceptor(request, response);
+            for (LmInterceptor interceptor : interceptors) {
+                isPass = interceptor.doInterceptor(request, response);
+                if (!isPass) break;
+            }
             if (isPass)
                 ctx.fireChannelRead(msg);
         }
