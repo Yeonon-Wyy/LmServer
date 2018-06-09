@@ -31,7 +31,7 @@ public class BeanDiscover implements Discover {
     private static final Map<String, List<LmFilter> > filterMaps = new HashMap<>();
 
     //interceptor maps
-    private static final Map<String, LmInterceptor> interceptorMaps = new HashMap<>();
+    private static final Map<String, List<LmInterceptor>> interceptorMaps = new HashMap<>();
 
 
 
@@ -77,6 +77,11 @@ public class BeanDiscover implements Discover {
         filterMaps.forEach((url, filters) -> {
             Collections.sort(filters);
         });
+
+        //处理拦截器顺序
+        interceptorMaps.forEach((url, interceptors) -> {
+            Collections.sort(interceptors);
+        });
     }
 
     private void processController(Class<?> clz, Object beanInstance) {
@@ -115,9 +120,9 @@ public class BeanDiscover implements Discover {
         for (String url : urls) {
             if (interceptorMaps.get(url) == null) {
                 log.info("加载interface " + clz.getName() + "url 是" + url);
-                interceptorMaps.put(url, interceptorInstance);
+                interceptorMaps.put(url, Lists.newArrayList(interceptorInstance));
             } else {
-                log.info("该url " + url + " 已经被加载过了");
+                interceptorMaps.get(url).add(interceptorInstance);
             }
         }
     }
@@ -150,7 +155,7 @@ public class BeanDiscover implements Discover {
         return filterMaps.get(url);
     }
 
-    public static LmInterceptor getInterceptor(String url) {
+    public static List<LmInterceptor> getInterceptor(String url) {
         return interceptorMaps.get(url);
     }
 }

@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 @Component
 public @interface Interceptor {
     String[] value() default {};
+
+    int order() default 0;
 }

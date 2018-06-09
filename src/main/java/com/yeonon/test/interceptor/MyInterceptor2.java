@@ -10,11 +10,11 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
  * @Author yeonon
  * @date 2018/5/25 0025 16:23
  **/
-@Interceptor(value = "/test", order = 2)
-public class MyInterceptor extends AbstractLmInterceptor {
+@Interceptor(value = "/test", order = 1)
+public class MyInterceptor2 extends AbstractLmInterceptor {
     @Override
     public boolean doInterceptor(LmRequest request, LmResponse response) {
-        response.setContent("被拦截了 1").send();
-        return true;
+        response.setContent("被拦截了 2").send();
+        return false;
     }
 }
