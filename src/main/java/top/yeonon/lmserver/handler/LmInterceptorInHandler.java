@@ -14,7 +14,7 @@ import java.util.List;
  * @Author yeonon
  * @date 2018/5/25 0025 16:17
  **/
-public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
+public class LmInterceptorInHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -29,12 +29,12 @@ public class LmInterceptorHandler extends ChannelInboundHandlerAdapter {
         } else {
             LmResponse response = LmResponse.build(ctx, request);
             for (LmInterceptor interceptor : interceptors) {
-                isPass = interceptor.doInterceptor(request, response);
+                isPass = interceptor.preHandler(request, response);
                 if (!isPass) break;
             }
             if (isPass)
                 ctx.fireChannelRead(msg);
         }
-
     }
+
 }

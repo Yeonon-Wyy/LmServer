@@ -12,9 +12,14 @@ import top.yeonon.lmserver.interceptor.LmInterceptor;
  **/
 @Interceptor(value = "/test", order = 2)
 public class MyInterceptor extends AbstractLmInterceptor {
-    @Override
-    public boolean doInterceptor(LmRequest request, LmResponse response) {
 
+    @Override
+    public boolean preHandler(LmRequest request, LmResponse response) {
         return true;
+    }
+
+    @Override
+    public void postHandler(LmRequest request, LmResponse response) {
+        System.out.println("hello, 拦截器");
     }
 }

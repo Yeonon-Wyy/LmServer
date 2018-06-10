@@ -46,7 +46,6 @@ public class LmResponse {
     }
 
 
-
     private Object content = Unpooled.EMPTY_BUFFER;
     private HttpHeaders headers = new DefaultHttpHeaders();
     private Set<Cookie> cookies = new HashSet<>();
@@ -70,6 +69,7 @@ public class LmResponse {
 
     /**
      * 设置Content-Type
+     *
      * @param contentType 字符串
      */
     public LmResponse setContentType(String contentType) {
@@ -80,6 +80,7 @@ public class LmResponse {
 
     /**
      * 设置响应状态码
+     *
      * @param status 状态码
      * @return 本身
      */
@@ -90,6 +91,7 @@ public class LmResponse {
 
     /**
      * 设置响应状态码（使用数字，例如200）
+     *
      * @param statusCode 响应码的数字表示
      * @return 本身
      */
@@ -100,7 +102,8 @@ public class LmResponse {
 
     /**
      * 设置响应头字段（重复的会覆盖值）
-     * @param headerName 字段名
+     *
+     * @param headerName  字段名
      * @param headerValue 字段值
      * @return 本身
      */
@@ -111,7 +114,8 @@ public class LmResponse {
 
     /**
      * 设置响应头字段
-     * @param headerName 字段名
+     *
+     * @param headerName  字段名
      * @param headerValue 字段值
      * @return 本身
      */
@@ -122,6 +126,7 @@ public class LmResponse {
 
     /**
      * 设置响应头集合
+     *
      * @param headers 用户可以自己构造HttpHeaders，然后一次传递进来
      * @return 本身
      */
@@ -132,6 +137,7 @@ public class LmResponse {
 
     /**
      * 设置Content-Length
+     *
      * @param contentLength 长度
      * @return 本身
      */
@@ -142,6 +148,7 @@ public class LmResponse {
 
     /**
      * 设置长连接
+     *
      * @return 本身
      */
     public LmResponse setKeepAlive() {
@@ -156,6 +163,7 @@ public class LmResponse {
 
     /**
      * 添加cookie
+     *
      * @param cookie 标准cookie对象
      * @return 本身
      */
@@ -166,7 +174,8 @@ public class LmResponse {
 
     /**
      * 添加cookie
-     * @param cookieName 字段名
+     *
+     * @param cookieName  字段名
      * @param cookieValue 字段值
      * @return 本身
      */
@@ -177,6 +186,7 @@ public class LmResponse {
 
     /**
      * 设置返回文本内容，基于Netty，故使用ByteBuf包装
+     *
      * @param content 返回内容
      * @return 本身
      */
@@ -188,6 +198,7 @@ public class LmResponse {
 
     /**
      * 设置返回的Buffer
+     *
      * @param content ByteBuf类型
      * @return 本身
      */
@@ -199,6 +210,7 @@ public class LmResponse {
 
     /**
      * 设置返回的Buffer
+     *
      * @param content ByteBuf类型
      * @return 本身
      */
@@ -216,6 +228,7 @@ public class LmResponse {
 
     /**
      * 转换成Netty支持的Response
+     *
      * @return response
      */
     private FullHttpResponse toFullHttpResponse() {
@@ -250,6 +263,7 @@ public class LmResponse {
 
     /**
      * 向客户端发送消息
+     *
      * @return ChannelFuture
      */
     public ChannelFuture send() {
@@ -287,6 +301,7 @@ public class LmResponse {
 
     /**
      * 发送文本内容给客户端（文本内容一般使用FullHttpResponse）
+     *
      * @return ChannelFuture
      */
     private ChannelFuture sendFull() {
@@ -304,13 +319,11 @@ public class LmResponse {
     }
 
 
-
-
     public ChannelFuture sendError(String errMsg, HttpResponseStatus status) {
         this.setContent(errMsg);
         setStatus(status);
         ctx.write(toFullHttpResponse());
-        ChannelFuture future =  ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
         //错误了应该是要关闭channel的
         future.addListener(ChannelFutureListener.CLOSE);
         return future;
@@ -320,7 +333,6 @@ public class LmResponse {
     public boolean isSent() {
         return isSent;
     }
-
 
 
     public static LmResponse build(ChannelHandlerContext ctx, LmRequest lmRequest) {

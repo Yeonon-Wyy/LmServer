@@ -8,11 +8,13 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import top.yeonon.lmserver.LmServerConst;
 import top.yeonon.lmserver.controller.LmHttpHandler;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.filter.LmFilter;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
+import top.yeonon.lmserver.http.LmWebRequest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +23,7 @@ import java.util.ListIterator;
 
 /**
  * 属于Netty框架下的的handler，处于进站方向的最后一个
+ *
  * @Author yeonon
  * @date 2018/5/23 0023 19:14
  **/
@@ -38,31 +41,22 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         //构建LmRequest和LmResponse
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
         LmResponse response = LmResponse.build(ctx, request);
-
         //获取请求路径
         String path = request.getPath();
-
-        List<LmFilter> filters = DefaultBeanProcessor.getFilter(path);
-
-        //执行前置filter
-        doBeforeFilter(filters, request);
-
         if (StringUtils.isNotBlank(path) && path.endsWith(".html")) {
             sendHtml(request, response, path);
         } else {
             sendNormalContent(request, response, path);
         }
-
-        //执行后置filter
-        doAfterFilter(filters, response);
-
+        ctx.write(new LmWebRequest(request, response));
     }
 
     /**
      * 发送HTML静态内容
-     * @param request 请求
+     *
+     * @param request  请求
      * @param response 响应
-     * @param path HTML所在路径
+     * @param path     HTML所在路径
      */
     private void sendHtml(LmRequest request, LmResponse response, String path) {
         String fileName = LmServerHandler.class.getResource("/").getPath() + STATIC_PATH + path;
@@ -70,16 +64,18 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         if (file.exists())
             response.setContent(file).setContentType(LmResponse.ContentTypeValue.HTML_CONTENT).send();
         else {
-            response.sendError("File not found!", HttpResponseStatus.NOT_FOUND);
+            response.sendError("404 Not Found", HttpResponseStatus.NOT_FOUND);
+
         }
     }
 
 
     /**
      * 发送普通文本
-     * @param request 请求
+     *
+     * @param request  请求
      * @param response 响应
-     * @param path 路径
+     * @param path     路径
      * @throws JsonProcessingException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
@@ -105,40 +101,9 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     /**
-     * 在执行业务逻辑之前执行
-     * @param filters 过滤器
-     * @param lmRequest 请求
-     */
-    private void doBeforeFilter(List<LmFilter> filters, LmRequest lmRequest) {
-        if (filters == null) return;
-        for (LmFilter filter : filters) {
-            filter.before(lmRequest);
-        }
-    }
-
-    /**
-     * 在执行业务逻辑之后
-     * @param filters 过滤器
-     * @param lmResponse 响应
-     */
-    private void doAfterFilter(List<LmFilter> filters, LmResponse lmResponse) {
-        if (filters == null) return;
-        //这里要方向遍历
-
-        //只能使用迭代器多遍历一次来实现，因为不能更改list的顺序，否则会在其他地方增加开销
-        ListIterator<LmFilter> li = filters.listIterator();
-        while (li.hasNext()) {
-            li.next();
-        }
-        while (li.hasPrevious()) {
-            li.previous().after(lmResponse);
-        }
-
-    }
-
-    /**
      * 异常捕获，在Netty中，这应该是Pipeline中最后的Handler实现的方法
-     * @param ctx ChannelHandlerContext
+     *
+     * @param ctx   ChannelHandlerContext
      * @param cause Throwable
      * @throws Exception
      */

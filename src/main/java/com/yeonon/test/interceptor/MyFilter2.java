@@ -14,12 +14,8 @@ import top.yeonon.lmserver.http.LmResponse;
 public class MyFilter2 extends AbstractLmFilter {
 
     @Override
-    public void before(LmRequest request) {
+    public void doFilter(LmRequest request) {
         System.out.println("filter 2 before");
     }
 
-    @Override
-    public void after(LmResponse response) {
-        System.out.println("filter 2 after");
-    }
 }

@@ -8,8 +8,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.handler.LmInterceptorHandler;
-import top.yeonon.lmserver.handler.LmServerHandler;
+import top.yeonon.lmserver.handler.*;
 
 import java.net.InetSocketAddress;
 
@@ -43,8 +42,12 @@ public class LmServerStarter {
                         pipeline.addLast(new HttpServerCodec());
                         pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
-                        pipeline.addLast(new LmInterceptorHandler());
+
+                        pipeline.addLast(new LmInterceptorOutHandler());
+                        pipeline.addLast(new LmFilterInHandler());
+                        pipeline.addLast(new LmInterceptorInHandler());
                         pipeline.addLast(new LmServerHandler());
+
                     }
                 });
         ChannelFuture future = serverBootstrap.bind(new InetSocketAddress(port));

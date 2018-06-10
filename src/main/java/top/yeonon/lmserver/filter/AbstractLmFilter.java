@@ -12,12 +12,7 @@ public class AbstractLmFilter implements LmFilter {
 
 
     @Override
-    public void before(LmRequest request) {
-
-    }
-
-    @Override
-    public void after(LmResponse response) {
+    public void doFilter(LmRequest request) {
 
     }
 

@@ -20,16 +20,6 @@ import java.util.Set;
  **/
 public class LmRequest {
 
-    public static final String METHOD_DELETE = HttpMethod.DELETE.name();
-    public static final String METHOD_HEAD = HttpMethod.HEAD.name();
-    public static final String METHOD_GET = HttpMethod.GET.name();
-    public static final String METHOD_OPTIONS = HttpMethod.OPTIONS.name();
-    public static final String METHOD_POST = HttpMethod.POST.name();
-    public static final String METHOD_PUT = HttpMethod.PUT.name();
-    public static final String METHOD_TRACE = HttpMethod.TRACE.name();
-
-    private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
-
     private FullHttpRequest nettyRequest;
 
     private String path;
@@ -78,6 +68,7 @@ public class LmRequest {
 
     /**
      * 设置Ip
+     *
      * @param ctx channelHandler上下文
      */
     private void putIp(ChannelHandlerContext ctx) {
@@ -86,11 +77,11 @@ public class LmRequest {
     }
 
 
-
     //参数相关内容
 
     /**
      * 从uri中解析Query 参数
+     *
      * @param queryStringDecoder 参数解码器
      */
     protected void putParams(QueryStringDecoder queryStringDecoder) {
@@ -106,6 +97,7 @@ public class LmRequest {
 
     /**
      * 支持Post请求
+     *
      * @param decoder 专门解决Post请求的参数
      */
     protected void putParams(HttpPostRequestDecoder decoder) {
@@ -120,6 +112,7 @@ public class LmRequest {
 
     /**
      * 参数绑定用的
+     *
      * @param data
      */
     protected void putParam(InterfaceHttpData data) {
@@ -137,6 +130,7 @@ public class LmRequest {
 
     /**
      * 直接填加参数
+     *
      * @param key 参数名
      * @param val 参数值
      */
@@ -145,7 +139,6 @@ public class LmRequest {
     }
 
     /**
-     *
      * @return 参数的Map
      */
     public Map<String, Object> getParams() {
@@ -154,6 +147,7 @@ public class LmRequest {
 
     /**
      * 根据参数名获取对应参数
+     *
      * @param paramName 参数名
      * @return 参数值
      */
@@ -175,6 +169,7 @@ public class LmRequest {
 
     /**
      * 获取Double类型的值
+     *
      * @param paramName 参数名
      * @return Double类型的参数值
      */
@@ -185,6 +180,7 @@ public class LmRequest {
 
     /**
      * 获取Integer类型的值
+     *
      * @param paramName 参数名
      * @return Integer类型的参数值
      */
@@ -195,6 +191,7 @@ public class LmRequest {
 
     /**
      * 获取Long类型的值
+     *
      * @param paramName 参数名
      * @return Long类型的参数值
      */
@@ -206,6 +203,7 @@ public class LmRequest {
 
     /**
      * 获取Float类型的值
+     *
      * @param paramName 参数名
      * @return Float类型的参数值
      */
@@ -216,6 +214,7 @@ public class LmRequest {
 
     /**
      * 获取Boolean类型的值
+     *
      * @param paramName 参数名
      * @return Boolean类型的参数值
      */
@@ -226,6 +225,7 @@ public class LmRequest {
 
     /**
      * 获取请求路径
+     *
      * @return 路径
      */
     public String getPath() {
@@ -233,11 +233,11 @@ public class LmRequest {
     }
 
 
-
     // 请求头相关(包含cookie)
 
     /**
      * 从Netty提供的HttpHeaders里提取出header和cookie
+     *
      * @param headers netty 提供的headers 包含诸多信息
      */
     public void putHeadersAndCookies(HttpHeaders headers) {
@@ -256,7 +256,6 @@ public class LmRequest {
     }
 
     /**
-     *
      * @return headers Map
      */
     public Map<String, String> getHeaders() {
@@ -265,6 +264,7 @@ public class LmRequest {
 
     /**
      * 根据Key 获取 Value
+     *
      * @param headName 请求头字段名称
      * @return 请求头字段名称对应的值
      */
@@ -277,6 +277,7 @@ public class LmRequest {
 
     /**
      * 判断是否是长连接
+     *
      * @return 是否是长连接
      */
     public boolean isKeepAlive() {
@@ -309,6 +310,7 @@ public class LmRequest {
 
     /**
      * 获取Http协议版本号
+     *
      * @return 版本号
      */
     public HttpVersion getProtocolVersion() {
@@ -317,6 +319,7 @@ public class LmRequest {
 
     /**
      * 获取Http协议版本号的字符串形式
+     *
      * @return 字符串形式的版本号
      */
     public String getProtocolVersionString() {
@@ -325,6 +328,7 @@ public class LmRequest {
 
     /**
      * 获取请求方法
+     *
      * @return 请求方法
      */
     public HttpMethod getMethod() {
@@ -333,6 +337,7 @@ public class LmRequest {
 
     /**
      * 获取请求方法
+     *
      * @return 获取请求方法字符形式
      */
     public String getMethodString() {
@@ -351,7 +356,8 @@ public class LmRequest {
 
     /**
      * 构建LmRequest
-     * @param ctx ChannelHandlerContext
+     *
+     * @param ctx          ChannelHandlerContext
      * @param nettyRequest FullHttpRequest
      * @return LmRequest
      */
