@@ -1,7 +1,7 @@
 package top.yeonon.lmserver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
@@ -11,7 +11,7 @@ import top.yeonon.lmserver.utils.PropertiesUtil;
  **/
 public final class LmServerConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(LmServerConfig.class);
+    private static final Logger log = Logger.getLogger(LmServerConfig.class);
 
     private String scanPackage;
     private Integer serverPort;

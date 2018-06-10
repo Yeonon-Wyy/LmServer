@@ -1,8 +1,7 @@
 package top.yeonon.lmserver.core.ioc;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import top.yeonon.lmserver.annotation.*;
 import top.yeonon.lmserver.controller.LmHttpHandler;
 import top.yeonon.lmserver.filter.LmFilter;
@@ -20,7 +19,7 @@ import java.util.*;
  **/
 public class DefaultBeanProcessor implements BeanProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultBeanProcessor.class);
+    private static final Logger log = Logger.getLogger(DefaultBeanProcessor.class);
 
     //bean maps
     private static final Map<Class<?>, Object> beanMaps = new HashMap<>();

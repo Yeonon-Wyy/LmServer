@@ -7,6 +7,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.apache.log4j.Logger;
 import top.yeonon.lmserver.handler.LmInterceptorHandler;
 import top.yeonon.lmserver.handler.LmServerHandler;
 
@@ -18,6 +19,8 @@ import java.net.InetSocketAddress;
  * @date 2018/5/20 0020 17:51
  **/
 public class LmServerStarter {
+
+    private final static Logger log = Logger.getLogger(LmServerStarter.class);
 
     private Channel channel;
     private final EventLoopGroup group;
@@ -64,6 +67,7 @@ public class LmServerStarter {
         LmServerStarter starter = new LmServerStarter(serverConfig.getServerPort());
         ChannelFuture future = starter.start();
 
+        log.info("启动成功");
         Runtime.getRuntime().addShutdownHook(new Thread(starter::stop));
 
         future.channel().closeFuture().syncUninterruptibly();

@@ -12,8 +12,7 @@ import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.util.CharsetUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +27,7 @@ import java.util.Set;
  **/
 public class LmResponse {
 
-    private static final Logger log = LoggerFactory.getLogger(LmResponse.class);
+    private static final Logger log = Logger.getLogger(LmResponse.class);
 
     /**
      * Content-Type的值常量

@@ -2,15 +2,12 @@ package top.yeonon.lmserver.controller;
 
 import jdk.internal.org.objectweb.asm.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 
 import static org.objectweb.asm.Opcodes.ASM4;
 
@@ -29,7 +26,9 @@ public class LmHttpHandler {
     //映射的方法
     private Method method;
 
-    private static final Logger log = LoggerFactory.getLogger(LmHttpHandler.class);
+
+
+    private static final Logger log = Logger.getLogger(LmHttpHandler.class);
 
     /**
      *

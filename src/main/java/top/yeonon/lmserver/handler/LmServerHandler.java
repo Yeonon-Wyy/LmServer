@@ -7,8 +7,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import top.yeonon.lmserver.controller.LmHttpHandler;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.filter.LmFilter;
@@ -27,7 +26,7 @@ import java.util.ListIterator;
  **/
 public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final Logger log = LoggerFactory.getLogger(LmServerHandler.class);
+    private static final Logger log = Logger.getLogger(LmServerHandler.class);
 
     private static final String STATIC_PATH = "static";
 
