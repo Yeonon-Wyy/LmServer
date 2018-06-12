@@ -10,6 +10,7 @@ import top.yeonon.lmserver.http.LmRequest;
 import java.util.List;
 
 /**
+ * 处理Filter
  * @Author yeonon
  * @date 2018/6/10 0010 13:39
  **/
@@ -20,9 +21,11 @@ public class LmFilterInHandler extends ChannelInboundHandlerAdapter {
         FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
         LmRequest request = LmRequest.build(ctx, fullHttpRequest);
 
+        //获取请求路径
         String path = request.getPath();
         List<LmFilter> filters = DefaultBeanProcessor.getFilter(path);
 
+        //遍历该Url对应的所有Filter，执行Filter逻辑
         if (filters != null) {
             for (LmFilter filter : filters) {
                 filter.doFilter(request);

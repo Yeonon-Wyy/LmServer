@@ -1,6 +1,8 @@
 package top.yeonon.lmserver.http;
 
 /**
+ * 将Request和Response封装到一起
+ *
  * @Author yeonon
  * @date 2018/6/10 0010 14:25
  **/

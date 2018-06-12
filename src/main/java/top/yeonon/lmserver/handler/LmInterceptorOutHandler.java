@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
+ * 后置拦截器的处理逻辑
  * @Author yeonon
  * @date 2018/6/10 0010 15:01
  **/
@@ -28,6 +29,7 @@ public class LmInterceptorOutHandler extends ChannelOutboundHandlerAdapter {
             LmResponse response = webRequest.getLmResponse();
             List<LmInterceptor> interceptors = DefaultBeanProcessor.getInterceptor(request.getPath());
 
+            //这里要反向遍历拦截器
             ListIterator<LmInterceptor> li = interceptors.listIterator();
             while (li.hasNext()) {
                 li.next();
@@ -36,6 +38,8 @@ public class LmInterceptorOutHandler extends ChannelOutboundHandlerAdapter {
                 li.previous().postHandler(request, response);
             }
         }
+
+        //最后继续调用后面的ChannelOutboundHandler（如何有的话）
         super.write(ctx, msg, promise);
     }
 }

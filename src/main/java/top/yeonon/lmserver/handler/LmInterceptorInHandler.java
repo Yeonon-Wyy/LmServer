@@ -23,6 +23,7 @@ public class LmInterceptorInHandler extends ChannelInboundHandlerAdapter {
 
         String path = request.getPath();
         List<LmInterceptor> interceptors = DefaultBeanProcessor.getInterceptor(path);
+        //默认是通过拦截器
         boolean isPass = true;
         if (interceptors == null) {
             ctx.fireChannelRead(msg);
@@ -30,9 +31,9 @@ public class LmInterceptorInHandler extends ChannelInboundHandlerAdapter {
             LmResponse response = LmResponse.build(ctx, request);
             for (LmInterceptor interceptor : interceptors) {
                 isPass = interceptor.preHandler(request, response);
-                if (!isPass) break;
+                if (!isPass) break; //一旦有一个拦截器返回False，就没有必要执行之后的拦截器逻辑了
             }
-            if (isPass)
+            if (isPass) //通过才会继续往下执行业务逻辑
                 ctx.fireChannelRead(msg);
         }
     }

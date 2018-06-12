@@ -6,6 +6,8 @@ import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
 /**
+ *
+ * 系统配置类，用来配置系统默认属性
  * @Author yeonon
  * @date 2018/5/22 0022 22:27
  **/

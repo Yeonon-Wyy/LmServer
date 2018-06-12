@@ -156,6 +156,12 @@ public class LmResponse {
         return this;
     }
 
+
+    /**
+     * 设置Http版本号，目前默认是Http1.1，最新是2.0
+     * @param version
+     * @return
+     */
     public LmResponse setHttpVersion(HttpVersion version) {
         this.httpVersion = version;
         return this;
@@ -283,6 +289,12 @@ public class LmResponse {
     }
 
 
+    /**
+     * 传输文件，在Netty中，传输File需要做特殊处理，例如要用HttpResponse作为响应而不是FullHttpResponse
+     * @param file  文件
+     * @return future
+     * @throws IOException
+     */
     private ChannelFuture sendFile(File file) throws IOException {
         if (lmRequest.isKeepAlive()) {
             setKeepAlive();
@@ -318,7 +330,12 @@ public class LmResponse {
         return future;
     }
 
-
+    /**
+     * 发送错误信息，响应码给前端，最后要关闭channel
+     * @param errMsg
+     * @param status
+     * @return
+     */
     public ChannelFuture sendError(String errMsg, HttpResponseStatus status) {
         this.setContent(errMsg);
         setStatus(status);
@@ -329,12 +346,21 @@ public class LmResponse {
         return future;
     }
 
-
+    /**
+     * 判断该Response是否已发送，防止重复发送
+     * @return
+     */
     public boolean isSent() {
         return isSent;
     }
 
 
+    /**
+     * 构建LmResponse
+     * @param ctx ChannelHandlerContext
+     * @param lmRequest requiest
+     * @return response
+     */
     public static LmResponse build(ChannelHandlerContext ctx, LmRequest lmRequest) {
         return new LmResponse(ctx, lmRequest);
     }
