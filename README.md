@@ -8,7 +8,7 @@ LmServer基于Netty实现的一个Web服务器，封装了Netty提供的HttpRequ
 ## 依赖
 1. Netty 4.1.9
 2. jackson 2.9.5
-3. slf4j 1.7.25
+3. log4j 1.2.17
 
 ## 使用Demo
 ```java
@@ -49,23 +49,52 @@ public class MyFilter implements LmFilter {
     }
 }
 
-@Service
-public class MyService implements IMyService{
 
-    @Autowire
-    private TestController controller;
-
-    public String testServeice() {
-        System.out.println(controller);
-        return "testService";
-    }
-}
 
 //启动类
 public class Main {
 
     public static void main(String[] args) {
         LmServerStarter.run(Main.class);
+    }
+}
+
+//普通类
+public class TestBean {
+
+    private String test = "testBean success!";
+
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+}
+
+//配置类
+@Configuration
+public class MyConfig {
+
+    @Bean
+    public TestBean testBean() {
+        TestBean testBean = new TestBean();
+        testBean.setTest("我擦你妈比");
+        return testBean;
+    }
+}
+
+@Service
+public class MyService implements IMyService{
+
+    //这个TestBean类没有@Component注解，但已经在configuration类里添加了，所以也可以依赖注入进来
+    @Autowire
+    private TestBean testBean;
+
+    public String testServeice() {
+        return testBean.getTest();
     }
 }
 ```
@@ -75,6 +104,7 @@ public class Main {
 2. 默认端口是9000，可以通过配置文件application.properties修改配置项serverPort修改
 3. 因为注解是要发现的，所有需要包扫描。默认的包扫描路径就是启动类所在的包路径，当然，这也是可配置的。（配置项附在最后）
 4. 建议启动类放在业务代码的包的根路径下
+5. 目前支持的功能还很少，很多我想实现的功能还没有实现，主要是技术还不足，例如渲染界面，一直不知道该如何下手。
 
 
 ## 配置项
