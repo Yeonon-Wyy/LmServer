@@ -7,13 +7,11 @@ import java.lang.annotation.Target;
 
 /**
  * @Author yeonon
- * @date 2018/5/25 0025 16:06
+ * @date 2018/6/18 0018 11:57
  **/
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Bean
-public @interface Interceptor {
-    String[] value() default {};
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+public @interface Bean {
 
-    int order() default 0;
+    String value() default "";
 }

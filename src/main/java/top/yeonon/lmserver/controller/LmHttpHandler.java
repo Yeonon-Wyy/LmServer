@@ -11,11 +11,13 @@ import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.ASM4;
 
+
 /**
  * 处理请求的类
  *
  * Ps： 一个类可能有多个处理Url的方法，即一个classInstance可能有多个method，这种情况也会有多个handler，
  * 但是他们的method字段不同(classInstance相同)。
+ *
  * @Author yeonon
  * @date 2018/5/23 0023 18:24
  **/
@@ -25,8 +27,6 @@ public class LmHttpHandler {
 
     //映射的方法
     private Method method;
-
-
 
     private static final Logger log = Logger.getLogger(LmHttpHandler.class);
 
@@ -76,7 +76,7 @@ public class LmHttpHandler {
                             } else {
                                 switch (typeSimpleName) {
                                     case "Integer" : args[i-1] = request.getIntegerParam(s);break;
-                                    case "Long" : args[i-1] = request.getLongParam(s);break;
+                                      case "Long" : args[i-1] = request.getLongParam(s);break;
                                     case "String": args[i-1] = request.getStringParam(s);break;
                                     case "Boolean" : args[i-1] = request.getBooleanParam(s);break;
                                     case "Float" : args[i-1] = request.getFloatParam(s);break;

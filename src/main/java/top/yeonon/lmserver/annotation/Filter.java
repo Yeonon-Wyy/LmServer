@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  **/
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Component
+@Bean
 public @interface Filter {
     String[] value();
 

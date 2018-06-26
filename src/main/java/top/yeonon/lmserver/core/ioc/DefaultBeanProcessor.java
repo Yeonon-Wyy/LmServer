@@ -6,7 +6,6 @@ import top.yeonon.lmserver.annotation.*;
 import top.yeonon.lmserver.controller.LmHttpHandler;
 import top.yeonon.lmserver.filter.LmFilter;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
-import top.yeonon.lmserver.utils.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -17,12 +16,10 @@ import java.util.*;
  * @Author yeonon
  * @date 2018/5/31 0031 19:37
  **/
-public class DefaultBeanProcessor implements BeanProcessor {
+public class DefaultBeanProcessor extends AbstractBeanProcessor{
 
     private static final Logger log = Logger.getLogger(DefaultBeanProcessor.class);
 
-    //bean maps
-    private static final Map<Class<?>, Object> beanMaps = new HashMap<>();
 
     //http handler maps
     private static final Map<String, LmHttpHandler> httpHandlerMaps = new HashMap<>();
@@ -34,35 +31,22 @@ public class DefaultBeanProcessor implements BeanProcessor {
     private static final Map<String, List<LmInterceptor>> interceptorMaps = new HashMap<>();
 
 
+    private final String packageName;
 
-    //核心方法
-    @Override
-    public void doProcess(String packageName) {
-        Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName);
-        try {
-            for (Class<?> clz : classSets) {
-                if (clz != null && clz.getAnnotations() != null) {
-                    Annotation[] annotations = clz.getAnnotations();
-                    for (Annotation annotation : annotations) {
-                        if (annotation.annotationType().isAnnotationPresent(Component.class)) {
-                            beanMaps.put(clz, clz.newInstance());
-                        }
-                    }
-                }
-            }
-            processBean();
-
-        } catch (IllegalAccessException | InstantiationException e) {
-            log.error(e.toString());
-        }
+    public DefaultBeanProcessor(String packageName) {
+        this.packageName = packageName;
     }
 
+    //核心方法
     /**
      * 处理容器中的所有Bean，主要是分类，依赖注入等
      */
-    private void processBean() {
+    @Override
+    public void processBean() {
+        //先去处理Bean
+        super.beanProcessor(packageName);
 
-        beanMaps.forEach((clz, beanInstance) -> {
+        super.getBeanMaps().forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&
                     clz.isAnnotationPresent(Interceptor.class)) {
                 //如果是拦截器，则执行拦截器的处理逻辑
@@ -101,7 +85,7 @@ public class DefaultBeanProcessor implements BeanProcessor {
                 Annotation[] annotations = clz.getAnnotations();
                 for (Annotation annotation : annotations) {
                     //判断这个类上的注解是否也是Component(注解上可以有注解)
-                    if (annotation.annotationType().isAnnotationPresent(Component.class)) {
+                    if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
                         Field[] fields = clz.getDeclaredFields();
                         //获取所有字段
                         for (Field field : fields) {
@@ -109,9 +93,9 @@ public class DefaultBeanProcessor implements BeanProcessor {
                                 field.setAccessible(true);
                                 Class<?> fieldClass = field.getType();
 
-                                if (beanMaps.get(fieldClass) != null) {
+                                if (super.getBeanMaps().get(fieldClass) != null) {
                                     //如果容器中存在这个字段的类，则将其赋值
-                                    field.set(beanInstance, beanMaps.get(fieldClass));
+                                    field.set(beanInstance, super.getBeanMaps().get(fieldClass));
                                 }
                             }
                         }
@@ -198,10 +182,6 @@ public class DefaultBeanProcessor implements BeanProcessor {
     }
 
 
-
-    public static Map<Class<?>, Object> getBeanMaps() {
-        return beanMaps;
-    }
 
     public static LmHttpHandler getHandler(String url) {
         return httpHandlerMaps.get(url);

@@ -33,7 +33,7 @@ public class LmServerStarter {
         serverBootstrap = new ServerBootstrap();
     }
 
-    public ChannelFuture start() {
+    private ChannelFuture start() {
         serverBootstrap.group(group)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<Channel>() {
@@ -56,7 +56,7 @@ public class LmServerStarter {
         return future;
     }
 
-    public void stop() {
+    private void stop() {
         if (channel != null) {
             channel.closeFuture();
         }
@@ -71,6 +71,8 @@ public class LmServerStarter {
         ChannelFuture future = starter.start();
 
         log.info("启动成功");
+
+        //添加关闭监听器
         Runtime.getRuntime().addShutdownHook(new Thread(starter::stop));
 
         future.channel().closeFuture().syncUninterruptibly();

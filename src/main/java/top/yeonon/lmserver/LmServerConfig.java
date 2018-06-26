@@ -2,6 +2,8 @@ package top.yeonon.lmserver;
 
 
 import org.apache.log4j.Logger;
+import top.yeonon.lmserver.core.ioc.AbstractBeanProcessor;
+import top.yeonon.lmserver.core.ioc.BeanProcessor;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.utils.PropertiesUtil;
 
@@ -29,8 +31,8 @@ public final class LmServerConfig {
         //处理属性值
         processProperties();
 
-        DefaultBeanProcessor beanDiscover = new DefaultBeanProcessor();
-        beanDiscover.doProcess(scanPackage);
+        //发现Bean
+        new DefaultBeanProcessor(scanPackage).processBean();
 
         //扫描controller,interceptor,filter等
 

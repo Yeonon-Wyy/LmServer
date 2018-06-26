@@ -6,5 +6,13 @@ package top.yeonon.lmserver;
  **/
 public interface LmServerConst {
 
-    String LM_PATH = "Lm-Path";
+    interface BaseDataType {
+        String INTEGER = "Integer";
+        String LONG = "Long";
+        String STRING = "String";
+        String BOOLEAN = "Boolean";
+        String DOUBLE = "Double";
+        String FLOAT = "Float";
+
+    }
 }

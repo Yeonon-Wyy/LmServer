@@ -2,6 +2,7 @@ package com.yeonon.test.service;
 
 import com.yeonon.test.controller.MyController;
 import com.yeonon.test.controller.TestController;
+import com.yeonon.test.filter.TestBean;
 import top.yeonon.lmserver.annotation.Autowire;
 import top.yeonon.lmserver.annotation.Service;
 
@@ -13,10 +14,9 @@ import top.yeonon.lmserver.annotation.Service;
 public class MyService implements IMyService{
 
     @Autowire
-    private TestController controller;
+    private TestBean testBean;
 
     public String testServeice() {
-        System.out.println(controller);
-        return "testService";
+        return testBean.getTest();
     }
 }
