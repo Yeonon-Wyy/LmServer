@@ -81,7 +81,7 @@ public class MyConfig {
     @Bean
     public TestBean testBean() {
         TestBean testBean = new TestBean();
-        testBean.setTest("我擦你妈比");
+        testBean.setTest("Hello");
         return testBean;
     }
 }
