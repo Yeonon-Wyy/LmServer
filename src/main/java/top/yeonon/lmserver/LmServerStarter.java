@@ -66,6 +66,7 @@ public class LmServerStarter {
     public static void run(Class<?> mainClass) {
 
         LmServerConfig serverConfig = new LmServerConfig(mainClass);
+        log.info("服务器监听端口 ： " + serverConfig.getServerPort());
 
         LmServerStarter starter = new LmServerStarter(serverConfig.getServerPort());
         ChannelFuture future = starter.start();

@@ -42,9 +42,9 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
      * 处理容器中的所有Bean，主要是分类，依赖注入等
      */
     @Override
-    public void processBean() {
+    public void processBean(boolean isMultiThread) {
         //先去处理Bean
-        super.beanProcessor(packageName);
+        super.beanProcessor(packageName, isMultiThread);
 
         super.getBeanMaps().forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&

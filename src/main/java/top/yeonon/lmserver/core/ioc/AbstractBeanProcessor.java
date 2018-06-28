@@ -33,9 +33,9 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
      * @param packageName 包名
      */
     @Override
-    public void beanProcessor(String packageName) {
+    public void beanProcessor(String packageName, boolean isMultiThread) {
         //获取该包下的所有类
-        Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName);
+        Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName, isMultiThread);
         try {
             for (Class<?> clz : classSets) {
                 //如果该类上没有注解，或者clz为null（有可能）就表明不需要往下执行逻辑
@@ -98,7 +98,7 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
     /**
      * 子类处理Bean的具体逻辑
      */
-    protected abstract void processBean();
+    protected abstract void processBean(boolean isMultiThread);
 
 
     public Map<Class<?>, Object> getBeanMaps() {

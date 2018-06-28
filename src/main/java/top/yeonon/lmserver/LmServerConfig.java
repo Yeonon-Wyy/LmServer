@@ -19,6 +19,7 @@ public final class LmServerConfig {
 
     private String scanPackage;
     private Integer serverPort;
+    private Boolean scanWithMultiThread;
 
     private final Class<?> mainClass;
 
@@ -32,17 +33,18 @@ public final class LmServerConfig {
         processProperties();
 
         //发现Bean
-        new DefaultBeanProcessor(scanPackage).processBean();
+        new DefaultBeanProcessor(scanPackage).processBean(scanWithMultiThread);
 
-        //扫描controller,interceptor,filter等
 
     }
 
     private void processProperties() {
         final String defaultPackage = mainClass.getPackage().getName();
         final Integer defaultServerPort = 9000;
+        final Boolean DefaultScanWithMultiThread = false; //默认不开启多线程扫描
         scanPackage = PropertiesUtil.getStringProperty("scanPackage", defaultPackage);
         serverPort = PropertiesUtil.getIntegerProperty("serverPort", defaultServerPort);
+        scanWithMultiThread = PropertiesUtil.getBooleanProperty("scanWithMultiThread", DefaultScanWithMultiThread);
     }
 
 
