@@ -57,6 +57,7 @@ hs_err_pid*
 
 #target
 
+*.stackdump
 
 #eclipse file
 .settings/
