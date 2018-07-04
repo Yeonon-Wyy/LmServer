@@ -84,7 +84,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         LmHttpHandler handler = DefaultBeanProcessor.getHandler(path.trim());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
         if (handler != null) {
-            Object message = handler.execute(request);
+            Object message = handler.execute(request, response);
             if (message == null) {
                 //如果消息为null，也许是参数错误，或者服务端出现异常，例如读写数据库异常等
                 response.sendError("服务器异常或者参数错误", HttpResponseStatus.valueOf(500));

@@ -4,6 +4,7 @@ import jdk.internal.org.objectweb.asm.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.http.LmRequest;
+import top.yeonon.lmserver.http.LmResponse;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -47,7 +48,7 @@ public class LmHttpHandler {
      * @throws InvocationTargetException InvocationTargetException
      * @throws IllegalAccessException IllegalAccessException
      */
-    public Object execute(LmRequest request) throws InvocationTargetException, IllegalAccessException {
+    public Object execute(LmRequest request, LmResponse response) throws InvocationTargetException, IllegalAccessException {
         Object res = null;
         method.setAccessible(true);
 
@@ -73,7 +74,11 @@ public class LmHttpHandler {
 
                             if (LmRequest.class.getSimpleName().equals(typeSimpleName)) {
                                 args[i-1] = request;
-                            } else {
+                            } else if (LmResponse.class.getSimpleName().equals(typeSimpleName)) {
+                                args[i-1] = response;
+                            }
+
+                            else {
                                 switch (typeSimpleName) {
                                     case "Integer" : args[i-1] = request.getIntegerParam(s);break;
                                       case "Long" : args[i-1] = request.getLongParam(s);break;

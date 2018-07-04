@@ -7,6 +7,7 @@ import top.yeonon.lmserver.annotation.Autowire;
 import top.yeonon.lmserver.annotation.Controller;
 import top.yeonon.lmserver.annotation.RequestMapping;
 import top.yeonon.lmserver.http.LmRequest;
+import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
 
 /**
@@ -20,9 +21,10 @@ public class TestController {
     private MyService myService;
 
     @RequestMapping(value = "/test")
-    public String test(LmRequest lmRequest, Long id) {
+    public String test(LmRequest lmRequest, Long id, LmResponse response) {
         System.out.println(lmRequest);
         System.out.println(id);
+        System.out.println(response);
         return myService.testServeice();
     }
 }
