@@ -25,7 +25,7 @@ public class AbstractLmInterceptor implements LmInterceptor {
     /**
      * 排序的时候会默认使用这个方法
      *
-     * @param o
+     * @param o 需要比较的对象
      * @return
      */
     @Override

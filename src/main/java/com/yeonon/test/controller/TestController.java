@@ -1,6 +1,7 @@
 package com.yeonon.test.controller;
 
 import com.yeonon.test.interceptor.MyInterceptor;
+import com.yeonon.test.pojo.User;
 import com.yeonon.test.service.IMyService;
 import com.yeonon.test.service.MyService;
 import top.yeonon.lmserver.annotation.Autowire;
@@ -26,5 +27,12 @@ public class TestController {
         System.out.println(id);
         System.out.println(response);
         return myService.testServeice();
+    }
+
+    @RequestMapping(value = "/user")
+    public String user(int i) {
+        User user = new User();
+
+        return "Hello";
     }
 }
