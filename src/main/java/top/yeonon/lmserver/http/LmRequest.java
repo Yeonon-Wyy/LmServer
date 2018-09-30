@@ -175,6 +175,7 @@ public class LmRequest {
      */
     public Double getDoubleParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
         return Double.valueOf(paramValue);
     }
 
@@ -186,6 +187,7 @@ public class LmRequest {
      */
     public Integer getIntegerParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
         return Integer.valueOf(paramValue);
     }
 
@@ -209,6 +211,7 @@ public class LmRequest {
      */
     public Float getFloatParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
         return Float.valueOf(paramValue);
     }
 
@@ -220,7 +223,30 @@ public class LmRequest {
      */
     public Boolean getBooleanParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
         return Boolean.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Byte类型的值
+     * @param paramName 参数名
+     * @return 值
+     */
+    public Byte getByteParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
+        return Byte.valueOf(paramValue);
+    }
+
+    /**
+     * 获取Short类型的参数值
+     * @param paramName 参数名
+     * @return 值
+     */
+    public Short getShortParam(String paramName) {
+        String paramValue = this.getStringParam(paramName);
+        if (paramValue == null) return null;
+        return Short.valueOf(paramValue);
     }
 
     /**

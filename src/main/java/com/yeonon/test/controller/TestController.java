@@ -32,7 +32,7 @@ public class TestController {
     @RequestMapping(value = "/user")
     public String user(int i) {
         User user = new User();
-
+        System.out.println(i);
         return "Hello";
     }
 }

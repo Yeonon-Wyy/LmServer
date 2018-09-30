@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.ASM5;
 
 
 /**
@@ -28,6 +29,10 @@ public class LmHttpHandler {
 
     //映射的方法
     private Method method;
+
+    private static final String REQUEST_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmRequest;";
+
+    private static final String RESPONSE_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmResponse;";
 
     private static final Logger log = Logger.getLogger(LmHttpHandler.class);
 
@@ -57,54 +62,43 @@ public class LmHttpHandler {
         Object[] args = new Object[paramSize];
 
         //使用ASM来获取参数名，做参数绑定
+        putParams(args, paramSize, request, response);
+
+        res = this.method.invoke(this.classInstance, args);
+        return res;
+    }
+
+    private void putParams(Object[] args, int paramSize, LmRequest request, LmResponse response) {
         ClassReader reader = null;
         try {
             reader = new ClassReader(classInstance.getClass().getName());
-            reader.accept(new ClassVisitor(ASM4) {
+            reader.accept(new ClassVisitor(ASM5) {
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                     if (!method.getName().equals(name)) {
                         return super.visitMethod(access, name, desc, signature, exceptions);
                     }
 
-                    return new MethodVisitor(ASM4) {
+                    return new MethodVisitor(ASM5) {
 
                         @Override
-                        public void visitLocalVariable(String s, String s1, String s2, Label label, Label label1, int i) {
+                        public void visitLocalVariable(String paramName, String typeName, String s2, Label label, Label label1, int i) {
                             //该方法会处理在方法里创建的本地变量，但是会先处理参数
                             //我们不想获取方法中创建的本地变量，故做此判断（i比索引大1，故需要 i >= paramSize+1）
-                            if (i >= paramSize+1) return;
-                            if (s.equals("this")) return;
-                            String typeSimpleName = StringUtils.substring(s1, s1.lastIndexOf("/") + 1, s1.length() - 1);
+                            if (i >= paramSize + 1) return;
+                            if (paramName.equals("this")) return;
+                            //String typeSimpleName = StringUtils.substring(s1, s1.lastIndexOf("/") + 1, s1.length() - 1);
 
-                            if (LmRequest.class.getSimpleName().equals(typeSimpleName)) {
+                            if (REQUEST_TYPE_NAME.equals(typeName)) {
                                 args[i - 1] = request;
-                            } else if (LmResponse.class.getSimpleName().equals(typeSimpleName)) {
+                            } else if (RESPONSE_TYPE_NAME.equals(typeName)) {
                                 args[i - 1] = response;
                             } else {
-                                switch (typeSimpleName) {
-                                    case "Integer":
-                                        args[i - 1] = request.getIntegerParam(s);
-                                        break;
-                                    case "Long":
-                                        args[i - 1] = request.getLongParam(s);
-                                        break;
-                                    case "String":
-                                        args[i - 1] = request.getStringParam(s);
-                                        break;
-                                    case "Boolean":
-                                        args[i - 1] = request.getBooleanParam(s);
-                                        break;
-                                    case "Float":
-                                        args[i - 1] = request.getFloatParam(s);
-                                        break;
-                                    case "Double":
-                                        args[i - 1] = request.getDoubleParam(s);
-                                        break;
-                                    default:
-                                        args[i - 1] = request.getParam(s);
-                                        break;
+                                TypeNameEnum typeNameEnum = TypeNameEnum.getType(typeName);
+                                if (typeNameEnum == null) {
+                                    throw new IllegalArgumentException("不支持该类型！");
                                 }
+                                args[i - 1] = typeNameEnum.handle(paramName, request);
                             }
                         }
                     };
@@ -114,7 +108,5 @@ public class LmHttpHandler {
             log.error(e.getCause().toString());
         }
 
-        res = this.method.invoke(this.classInstance, args);
-        return res;
     }
 }
