@@ -43,10 +43,11 @@ public class LmServerStarter {
                         pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
 
-                        pipeline.addLast(new LmInterceptorOutHandler());
+
+                        pipeline.addLast(new LmPreInterceptorHandler());
                         pipeline.addLast(new LmFilterInHandler());
-                        pipeline.addLast(new LmInterceptorInHandler());
                         pipeline.addLast(new LmServerHandler());
+                        pipeline.addLast(new LmAfterInterceptorHandler());
 
                     }
                 });

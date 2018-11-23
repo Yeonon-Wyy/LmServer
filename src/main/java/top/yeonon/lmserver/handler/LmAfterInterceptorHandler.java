@@ -19,7 +19,7 @@ import java.util.ListIterator;
  * @Author yeonon
  * @date 2018/6/10 0010 15:01
  **/
-public class LmInterceptorOutHandler extends ChannelOutboundHandlerAdapter {
+public class LmAfterInterceptorHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -39,7 +39,7 @@ public class LmInterceptorOutHandler extends ChannelOutboundHandlerAdapter {
             }
         }
 
-        //最后继续调用后面的ChannelOutboundHandler（如何有的话）
+        //最后继续调用后面的ChannelOutboundHandler（如果有的话）
         super.write(ctx, msg, promise);
     }
 }

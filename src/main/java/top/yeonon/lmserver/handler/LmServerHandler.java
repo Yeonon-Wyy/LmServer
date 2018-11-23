@@ -44,21 +44,22 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
         //获取请求路径
         String path = request.getPath();
         if (StringUtils.isNotBlank(path) && path.endsWith(".html")) {
-            sendHtml(request, response, path);
+            sendHtml(response, path);
         } else {
             sendNormalContent(request, response, path);
         }
-        ctx.write(new LmWebRequest(request, response));
+
+        ctx.channel().write(new LmWebRequest(request, response));
     }
 
     /**
      * 发送HTML静态内容
      *
-     * @param request  请求
+     *
      * @param response 响应
      * @param path     HTML所在路径
      */
-    private void sendHtml(LmRequest request, LmResponse response, String path) {
+    private void sendHtml(LmResponse response, String path) {
         String fileName = LmServerHandler.class.getResource("/").getPath() + STATIC_PATH + path;
         File file = new File(fileName);
         if (file.exists())
