@@ -41,6 +41,9 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName, isMultiThread);
         try {
             for (Class<?> clz : classSets) {
+                if (clz != null) {
+                    classMaps.put(clz.getTypeName(), clz);
+                }
                 //如果该类上没有注解，或者clz为null（有可能）就表明不需要往下执行逻辑
                 if (clz != null && clz.getAnnotations().length != 0) {
                     //先判断该类是否是一个配置类，配置类和普通的组件分开处理
@@ -56,8 +59,6 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
                             }
                         }
                     }
-                } else if (clz != null) {
-                    classMaps.put(clz.getTypeName(), clz);
                 }
 
             }
@@ -110,7 +111,7 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
         return beanMaps;
     }
 
-    public Class<?> getType(String typename) {
-        return classMaps.get(typename);
+    public Map<String, Class<?>> getType() {
+        return classMaps;
     }
 }

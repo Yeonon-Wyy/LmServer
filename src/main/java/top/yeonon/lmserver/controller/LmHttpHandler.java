@@ -102,7 +102,7 @@ public class LmHttpHandler {
                                 if (typeNameEnum == null) {
                                     String newTypeName = typeName.replace("L","").replace(";","").replaceAll("/",".");
                                     //目前仅支持有@Entity注解的类
-                                    Class<?> type = DefaultBeanProcessor.get(newTypeName);
+                                    Class<?> type = DefaultBeanProcessor.getClassType(newTypeName);
                                     if (type == null) {
                                         throw new IllegalArgumentException("不支持该类型");
                                     }

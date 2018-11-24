@@ -30,11 +30,13 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
     //interceptor maps
     private static final Map<String, List<LmInterceptor>> interceptorMaps = new HashMap<>();
 
+    private static Map<String, Class<?>> typeMaps = null;
 
     private final String packageName;
 
     public DefaultBeanProcessor(String packageName) {
         this.packageName = packageName;
+        typeMaps = super.getType();
     }
 
     //核心方法
@@ -198,4 +200,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
         return interceptorMaps.get(url);
     }
 
+    public static Class<?> getClassType(String typename) {
+        return typeMaps.get(typename);
+    }
 }
