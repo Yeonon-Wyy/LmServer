@@ -30,11 +30,9 @@ public class TestController {
     }
 
     @RequestMapping(value = "/user")
-    public User user(int i) {
-        User user = new User();
-        user.setId(1L);
-        user.setName("aa");
-        System.out.println(i);
+    public User user(User user) {
         return user;
     }
+
+
 }

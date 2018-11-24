@@ -27,6 +27,9 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
     //bean maps
     private static final Map<Class<?>, Object> beanMaps = new HashMap<>();
 
+    //class map
+    private static final Map<String, Class<?>> classMaps = new HashMap<>();
+
     /**
      * 处理所有的Bean
      *
@@ -53,8 +56,10 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
                             }
                         }
                     }
-
+                } else if (clz != null) {
+                    classMaps.put(clz.getTypeName(), clz);
                 }
+
             }
 
         } catch (IllegalAccessException | InstantiationException e) {
@@ -103,5 +108,9 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
 
     public Map<Class<?>, Object> getBeanMaps() {
         return beanMaps;
+    }
+
+    public Class<?> getType(String typename) {
+        return classMaps.get(typename);
     }
 }

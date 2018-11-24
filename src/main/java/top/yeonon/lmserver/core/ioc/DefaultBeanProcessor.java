@@ -60,6 +60,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
                 //如果是controller,则执行对controller的处理逻辑
                 processController(clz, beanInstance);
             }
+
             processBeanWire(clz, beanInstance);
         });
 
@@ -73,6 +74,8 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
             Collections.sort(interceptors);
         });
     }
+
+
 
     /**
      * 实现依赖注入
@@ -194,4 +197,5 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
     public static List<LmInterceptor> getInterceptor(String url) {
         return interceptorMaps.get(url);
     }
+
 }

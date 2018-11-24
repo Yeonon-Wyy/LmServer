@@ -3,12 +3,15 @@ package top.yeonon.lmserver.controller;
 import jdk.internal.org.objectweb.asm.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import static org.objectweb.asm.Opcodes.ASM4;
 import static org.objectweb.asm.Opcodes.ASM5;
@@ -78,14 +81,13 @@ public class LmHttpHandler {
                     if (!method.getName().equals(name)) {
                         return super.visitMethod(access, name, desc, signature, exceptions);
                     }
-
                     return new MethodVisitor(ASM5) {
-
                         @Override
                         public void visitLocalVariable(String paramName, String typeName, String s2, Label label, Label label1, int i) {
                             //该方法会处理在方法里创建的本地变量，但是会先处理参数
                             //我们不想获取方法中创建的本地变量，故做此判断（i比索引大1，故需要 i >= paramSize+1）
                             if (i >= paramSize + 1) return;
+                            //本地实例方法隐含了this,这里直接隐编码即可
                             if (paramName.equals("this")) return;
                             //String typeSimpleName = StringUtils.substring(s1, s1.lastIndexOf("/") + 1, s1.length() - 1);
 
@@ -94,12 +96,25 @@ public class LmHttpHandler {
                             } else if (RESPONSE_TYPE_NAME.equals(typeName)) {
                                 args[i - 1] = response;
                             } else {
+
                                 TypeNameEnum typeNameEnum = TypeNameEnum.getType(typeName);
+                                //如果不是几个基本类型，那么就肯定是引用类型了，即对象
                                 if (typeNameEnum == null) {
-                                    throw new IllegalArgumentException("不支持该类型！");
+                                    String newTypeName = typeName.replace("L","").replace(";","").replaceAll("/",".");
+                                    //目前仅支持有@Entity注解的类
+                                    Class<?> type = DefaultBeanProcessor.get(newTypeName);
+                                    if (type == null) {
+                                        throw new IllegalArgumentException("不支持该类型");
+                                    }
+                                    //尝试组装对象
+                                    Object object = processObjectParam(type, request);
+                                    args[i-1] = object;
+                                    return;
                                 }
                                 args[i - 1] = typeNameEnum.handle(paramName, request);
                             }
+
+
                         }
                     };
                 }
@@ -108,5 +123,29 @@ public class LmHttpHandler {
             log.error(e.getCause().toString());
         }
 
+    }
+
+    private static Object processObjectParam(Class<?> clz, LmRequest request) {
+        try {
+            Object instance = clz.newInstance();
+            for (Field field : clz.getDeclaredFields()) {
+                field.setAccessible(true);
+                StringBuilder builder = new StringBuilder(field.getType().getName());
+                //为了复用typeNameEnum，这里还需要修改一下从Java反射中得到的字段typename
+                String newTypeName = builder.insert(0,'L').append(";").toString().replaceAll("\\.","/");
+                TypeNameEnum typeNameEnum = TypeNameEnum.getType(newTypeName);
+                if (typeNameEnum == null) {
+                    //如果还是对象，即typeNameEnum里没有包含的，那么就递归调用processObjectParam
+                    field.set(instance, processObjectParam(field.getType(), request));
+                    return instance;
+                }
+                //为刚刚构造出来的实例设置对象
+                field.set(instance, typeNameEnum.handle(field.getName(), request));
+            }
+            return instance;
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
 }
