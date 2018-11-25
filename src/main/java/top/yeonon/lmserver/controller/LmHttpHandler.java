@@ -52,13 +52,8 @@ public class LmHttpHandler {
     public Object execute(LmRequest request, LmResponse response) throws InvocationTargetException, IllegalAccessException {
         Object res = null;
         Object[] args;
-        //如果是java8，因为java8原生支持获取参数名，所以直接使用即可
-        if (JDKVersionUtil.isJava8()) {
-            args = PrimevalParamStrategy.INSTANCE.execute(method, classInstance, new LmWebRequest(request, response));
-        } else {
-            //否则就使用ASM来做
-            args = ASMParamBindStrategy.INSTANCE.execute(method, classInstance, new LmWebRequest(request, response));
-        }
+        //TODO 这里有个问题，当用户使用框架的时候，无法得知是否有用到-parameters参数，现在暂时先搁置，后面再回来做
+        args = ASMParamBindStrategy.INSTANCE.execute(method, classInstance, new LmWebRequest(request, response));
         res = this.method.invoke(this.classInstance, args);
         return res;
     }
