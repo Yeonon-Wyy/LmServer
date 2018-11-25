@@ -39,6 +39,7 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
     public void beanProcessor(String packageName, boolean isMultiThread) {
         //获取该包下的所有类
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName, isMultiThread);
+
         try {
             for (Class<?> clz : classSets) {
                 if (clz != null) {

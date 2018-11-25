@@ -45,8 +45,11 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
      */
     @Override
     public void processBean(boolean isMultiThread) {
+
         //先去处理Bean
         super.beanProcessor(packageName, isMultiThread);
+
+
 
         super.getBeanMaps().forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&
@@ -120,6 +123,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
      * @param beanInstance 类实例
      */
     private void processController(Class<?> clz, Object beanInstance) {
+
         log.info("加载controller ： " + clz.getName());
         //实例化该类
         //从class对象中得到该类声明的方法集合

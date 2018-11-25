@@ -6,11 +6,9 @@ import jdk.internal.org.objectweb.asm.Label;
 import jdk.internal.org.objectweb.asm.MethodVisitor;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
-import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmWebRequest;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static org.objectweb.asm.Opcodes.ASM5;

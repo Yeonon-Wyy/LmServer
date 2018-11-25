@@ -13,7 +13,5 @@ public class Main {
         LmServerStarter.run(Main.class);
     }
 
-    public static int test(int i) {
-        return i;
-    }
+
 }

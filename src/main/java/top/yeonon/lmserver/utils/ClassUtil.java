@@ -6,6 +6,7 @@ import top.yeonon.lmserver.core.ioc.AbstractBeanProcessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
@@ -15,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveTask;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * 遍历包名下的所有类
@@ -53,6 +56,8 @@ public final class ClassUtil {
                         //否则使用普通的单线程方式
                         findClassesByNormal(packageName, filePath, classSet);
                     }
+                } else if ("jar".equalsIgnoreCase(protocol)) {
+                    findClassOnJar(packageDirName, url, classSet);
                 }
             }
         } catch (IOException e) {
@@ -60,6 +65,38 @@ public final class ClassUtil {
         }
 
         return classSet;
+    }
+
+    private static void findClassOnJar(String packageDirname, URL url, Set<Class<?>> classSet) throws IOException {
+        JarFile jar = ((JarURLConnection)url.openConnection()).getJarFile();
+        Enumeration<JarEntry> entries  = jar.entries();
+        String packageName;
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String name = entry.getName();
+            if (name.charAt(0) == '/') {
+                name = name.substring(1);
+            }
+            if (name.startsWith(packageDirname)) {
+                int idx = name.lastIndexOf('/');
+                if (idx != -1) {
+                    packageName = name.substring(0, idx).replace('/','.');
+                    if (name.endsWith(".class") && !entry.isDirectory()) {
+                        // 去掉后面的".class" 获取真正的类名
+                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                        try{
+                            // 添加到classes
+                            classSet.add(Class.forName(packageName + '.' + className));
+                        }catch (ClassNotFoundException e){
+                            // log
+                            // .error("添加用户自定义视图类错误 找不到此类的.class文件");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
 

@@ -12,15 +12,8 @@ import java.lang.reflect.Parameter;
 public class Main {
     public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
 
-        Method method = Main.class.getDeclaredMethod("test", User.class);
 
-        Parameter[] parameters = method.getParameters();
-        System.out.println(method.getParameterCount());
-        for (Parameter parameter : parameters) {
-            System.out.println(parameter.getType().getTypeName());
-            System.out.println(parameter.getName());
-        }
-
+        System.out.println(System.getProperty("java.version"));
     }
 
 
