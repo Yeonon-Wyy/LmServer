@@ -22,15 +22,13 @@ public class TestController {
     private MyService myService;
 
     @RequestMapping(value = "/test")
-    public String test(LmRequest lmRequest, Long id, LmResponse response) {
-        System.out.println(lmRequest);
-        System.out.println(id);
-        System.out.println(response);
-        return myService.testServeice();
+    public Long test(LmRequest lmRequest, Long id, LmResponse response) {
+
+        return id;
     }
 
     @RequestMapping(value = "/user")
-    public User user(User user) {
+    public User user(User user, LmRequest request, LmResponse response) {
         return user;
     }
 

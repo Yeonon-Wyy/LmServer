@@ -1,12 +1,11 @@
 package com.yeonon.test.pojo;
 
-import top.yeonon.lmserver.annotation.Entity;
 
 /**
  * @Author yeonon
  * @date 2018/7/20 0020 16:33
  **/
-@Entity
+
 public class User {
 
     private Long id;
@@ -18,7 +17,7 @@ public class User {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
