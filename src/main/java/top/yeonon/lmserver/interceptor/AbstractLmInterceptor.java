@@ -1,6 +1,6 @@
 package top.yeonon.lmserver.interceptor;
 
-import top.yeonon.lmserver.annotation.Interceptor;
+import top.yeonon.lmserver.core.annotation.Interceptor;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 

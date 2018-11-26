@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.databind.param.strategy;
+package top.yeonon.lmserver.core.databind;
 
 import top.yeonon.lmserver.http.LmRequest;
 

@@ -1,20 +1,12 @@
 package top.yeonon.lmserver.filter;
 
-import top.yeonon.lmserver.annotation.Filter;
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
+import top.yeonon.lmserver.core.annotation.Filter;
 
 /**
  * @Author yeonon
  * @date 2018/6/9 0009 14:58
  **/
-public class AbstractLmFilter implements LmFilter {
-
-
-    @Override
-    public void doFilter(LmRequest request) {
-
-    }
+public abstract class AbstractLmFilter implements LmFilter {
 
     /**
      * 排序的时候会默认使用这个方法

@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.exception;
+package top.yeonon.lmserver.core.exception;
 
 /**
  * 参数错误异常

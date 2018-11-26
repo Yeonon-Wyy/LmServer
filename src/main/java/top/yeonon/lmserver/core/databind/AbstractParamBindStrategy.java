@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.databind.param.strategy;
+package top.yeonon.lmserver.core.databind;
 
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.http.LmRequest;
@@ -48,6 +48,8 @@ public abstract class AbstractParamBindStrategy implements ParamBindStrategy {
         }
         return null;
     }
+
+
     protected abstract void putParams(Object[] args, int paramSize, LmWebRequest request, Method method, Object instance);
 
 }

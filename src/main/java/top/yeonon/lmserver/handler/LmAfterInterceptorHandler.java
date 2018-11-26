@@ -3,14 +3,12 @@ package top.yeonon.lmserver.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import top.yeonon.lmserver.annotation.Interceptor;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 import top.yeonon.lmserver.http.LmWebRequest;
 import top.yeonon.lmserver.interceptor.LmInterceptor;
 
-import javax.jws.WebResult;
 import java.util.List;
 import java.util.ListIterator;
 

@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.annotation;
+package top.yeonon.lmserver.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,14 @@ import java.lang.annotation.Target;
 
 /**
  * @Author yeonon
- * @date 2018/5/31 0031 19:32
+ * @date 2018/5/24 0024 16:23
  **/
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Autowire {
+@Target(ElementType.TYPE)
+@Bean
+public @interface Filter {
+    String[] value();
+
+    int order() default 0;
+
 }

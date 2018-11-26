@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.databind.param.strategy;
+package top.yeonon.lmserver.core.databind;
 
 import jdk.internal.org.objectweb.asm.ClassReader;
 import jdk.internal.org.objectweb.asm.ClassVisitor;
@@ -6,6 +6,7 @@ import jdk.internal.org.objectweb.asm.Label;
 import jdk.internal.org.objectweb.asm.MethodVisitor;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
+import top.yeonon.lmserver.core.exception.LmServerParamErrorException;
 import top.yeonon.lmserver.http.LmWebRequest;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class ASMParamBindStrategy extends AbstractParamBindStrategy {
                                     //目前仅支持有@Entity注解的类
                                     Class<?> type = DefaultBeanProcessor.getClassType(newTypeName);
                                     if (type == null) {
-                                        throw new IllegalArgumentException("不支持该类型");
+                                        throw new LmServerParamErrorException("不支持该类型");
                                     }
                                     //尝试组装对象，processObjectParam是抽象父类的方法
                                     Object object = processObjectParam(type, request.getLmRequest());
