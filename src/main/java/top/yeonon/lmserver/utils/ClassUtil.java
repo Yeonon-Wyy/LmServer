@@ -1,7 +1,6 @@
 package top.yeonon.lmserver.utils;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import top.yeonon.lmserver.core.ioc.AbstractBeanProcessor;
 
 import java.io.File;
