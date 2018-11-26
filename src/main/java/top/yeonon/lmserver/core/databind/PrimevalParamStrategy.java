@@ -9,6 +9,7 @@ import java.lang.reflect.Parameter;
 
 
 /**
+ * 基于Java8 -parameters编译参数 的参数绑定策略（但目前还没想到什么好办法来自动选择策略）
  * @Author yeonon
  * @date 2018/11/25 0025 14:01
  **/
@@ -24,6 +25,15 @@ public class PrimevalParamStrategy extends AbstractParamBindStrategy {
 
     private PrimevalParamStrategy() {}
 
+    /**
+     * 如果Java8在编译的时候加入了-parameters参数，那么反射可以直接获得用户编写的参数名
+     * 故不需要特殊处理参数名
+     * @param args 参数数组
+     * @param paramSize 参数长度
+     * @param webRequest 包装后的请求
+     * @param method 方法实例
+     * @param instance 该方法所在的类实例
+     */
     @Override
     protected void putParams(Object[] args, int paramSize, LmWebRequest webRequest, Method method, Object instance) {
         Parameter[] parameters = method.getParameters();

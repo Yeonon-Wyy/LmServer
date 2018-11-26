@@ -4,7 +4,7 @@ import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
 /**
- * LmInterceptor接口
+ * LmInterceptor接口，一般不直接实现该接口，大多是继承@LmInterceptorAdapter适配器
  * @Author yeonon
  * @date 2018/5/25 0025 16:06
  **/

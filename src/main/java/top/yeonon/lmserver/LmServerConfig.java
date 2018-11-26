@@ -26,23 +26,26 @@ public final class LmServerConfig {
         init();
     }
 
+    /**
+     * 初始化
+     */
     private void init() {
         //处理属性值
         processProperties();
 
         //发现Bean
         new DefaultBeanProcessor(scanPackage).processBean(scanWithMultiThread);
-
-
     }
+
 
     private void processProperties() {
         final String defaultPackage = mainClass.getPackage().getName();
         final Integer defaultServerPort = 9000;
-        final Boolean DefaultScanWithMultiThread = false; //默认不开启多线程扫描
+        //默认不开启多线程扫描
+        final Boolean defaultScanWithMultiThread = false;
         scanPackage = PropertiesUtil.getStringProperty("scanPackage", defaultPackage);
         serverPort = PropertiesUtil.getIntegerProperty("serverPort", defaultServerPort);
-        scanWithMultiThread = PropertiesUtil.getBooleanProperty("scanWithMultiThread", DefaultScanWithMultiThread);
+        scanWithMultiThread = PropertiesUtil.getBooleanProperty("scanWithMultiThread", defaultScanWithMultiThread);
     }
 
 

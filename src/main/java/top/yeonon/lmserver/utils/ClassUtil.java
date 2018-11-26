@@ -45,6 +45,7 @@ public final class ClassUtil {
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
                 String protocol = url.getProtocol();
+                //如果是普通文件的形式
                 if ("file".equalsIgnoreCase(protocol)) {
                     //将Url转换成文件系统的路径表示
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
@@ -56,6 +57,7 @@ public final class ClassUtil {
                         findClassesByNormal(packageName, filePath, classSet);
                     }
                 } else if ("jar".equalsIgnoreCase(protocol)) {
+                    //如果是jar包的形式，那么就做对应处理(一般当框架打包之后作为第三方库使用的话，都会是Jar包的形式)
                     findClassOnJar(packageDirName, url, classSet);
                 }
             }
@@ -66,6 +68,13 @@ public final class ClassUtil {
         return classSet;
     }
 
+    /**
+     * 在Jar包中查找类
+     * @param packageDirname 包名称（不是包全限定类名，而是类似 xxx/xxx/xxx这样的路径）
+     * @param url 即Jar包的URL
+     * @param classSet 类对象集合
+     * @throws IOException
+     */
     private static void findClassOnJar(String packageDirname, URL url, Set<Class<?>> classSet) throws IOException {
         JarFile jar = ((JarURLConnection)url.openConnection()).getJarFile();
         Enumeration<JarEntry> entries  = jar.entries();
@@ -87,9 +96,7 @@ public final class ClassUtil {
                             // 添加到classes
                             classSet.add(Class.forName(packageName + '.' + className));
                         }catch (ClassNotFoundException e){
-                            // log
-                            // .error("添加用户自定义视图类错误 找不到此类的.class文件");
-                            e.printStackTrace();
+                            log.error("添加用户自定义视图类错误 找不到此类的.class文件");
                         }
                     }
                 }
@@ -166,11 +173,15 @@ public final class ClassUtil {
     }
 
 
+    /**
+     * ForkJoin框架的任务
+     */
     private static class FindFileTask extends RecursiveTask<Set<Class<?>>> {
 
-
-        private File file; //文件
-        private String packageName; //包名
+        //文件
+        private File file;
+        //包名
+        private String packageName;
 
         public FindFileTask(File file, String packageName) {
             this.file = file;

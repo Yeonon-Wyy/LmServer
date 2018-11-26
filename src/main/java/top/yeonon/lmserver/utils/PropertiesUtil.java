@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
+ * 属性处理工具
  * @Author yeonon
  * @date 2018/5/23 0023 14:02
  **/
@@ -22,8 +23,9 @@ public final class PropertiesUtil {
         props = new Properties();
         try {
             InputStream stream = PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName);
-            if (stream != null)
+            if (stream != null) {
                 props.load(new InputStreamReader(stream,"UTF-8"));
+            }
         } catch (Exception e) {
             log.error(e.toString());
         }
@@ -36,8 +38,9 @@ public final class PropertiesUtil {
      */
     public static String getStringProperty(String key) {
         String value = props.getProperty(key.trim());
-        if (StringUtils.isBlank(value))
+        if (StringUtils.isBlank(value)) {
             return null;
+        }
         return value;
     }
 

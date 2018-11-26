@@ -32,7 +32,9 @@ public class LmPreInterceptorHandler extends SimpleChannelInboundHandler<FullHtt
             for (LmInterceptor interceptor : interceptors) {
                 isPass = interceptor.preHandler(request, response);
                 //一旦有一个拦截器返回False，就没有必要执行之后的拦截器逻辑了
-                if (!isPass) break;
+                if (!isPass) {
+                    break;
+                }
             }
             //通过才会继续往下执行业务逻辑
             if (isPass) {

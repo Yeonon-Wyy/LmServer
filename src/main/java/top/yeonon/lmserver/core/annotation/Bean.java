@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
+/** 声明Bean
  * @Author yeonon
  * @date 2018/6/18 0018 11:57
  **/

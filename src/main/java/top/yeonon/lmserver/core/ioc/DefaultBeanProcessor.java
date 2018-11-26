@@ -19,7 +19,7 @@ import java.util.Map;
  * @Author yeonon
  * @date 2018/5/31 0031 19:37
  **/
-public class DefaultBeanProcessor extends AbstractBeanProcessor{
+public class DefaultBeanProcessor extends AbstractBeanProcessor {
 
     private static final Logger log = Logger.getLogger(DefaultBeanProcessor.class);
 
@@ -52,8 +52,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor{
         //先去处理Bean
         super.beanProcessor(packageName, isMultiThread);
 
-
-
+        //拿到beanMap,然后处理各种注解
         super.getBeanMaps().forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&
                     clz.isAnnotationPresent(Interceptor.class)) {

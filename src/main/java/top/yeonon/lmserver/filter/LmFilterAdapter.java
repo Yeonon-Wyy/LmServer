@@ -3,10 +3,11 @@ package top.yeonon.lmserver.filter;
 import top.yeonon.lmserver.core.annotation.Filter;
 
 /**
+ * 过滤器适配器类，继承的时候只需要实现过滤逻辑即可，其他的例如过滤器顺序等适配器里都会实现
  * @Author yeonon
  * @date 2018/6/9 0009 14:58
  **/
-public abstract class AbstractLmFilter implements LmFilter {
+public abstract class LmFilterAdapter implements LmFilter {
 
     /**
      * 排序的时候会默认使用这个方法

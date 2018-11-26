@@ -177,7 +177,9 @@ public class LmRequest {
      */
     public Double getDoubleParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Double.valueOf(paramValue);
     }
 
@@ -189,7 +191,9 @@ public class LmRequest {
      */
     public Integer getIntegerParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Integer.valueOf(paramValue);
     }
 
@@ -201,7 +205,9 @@ public class LmRequest {
      */
     public Long getLongParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Long.valueOf(paramValue);
     }
 
@@ -213,7 +219,9 @@ public class LmRequest {
      */
     public Float getFloatParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Float.valueOf(paramValue);
     }
 
@@ -225,7 +233,9 @@ public class LmRequest {
      */
     public Boolean getBooleanParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Boolean.valueOf(paramValue);
     }
 
@@ -236,7 +246,9 @@ public class LmRequest {
      */
     public Byte getByteParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Byte.valueOf(paramValue);
     }
 
@@ -247,7 +259,9 @@ public class LmRequest {
      */
     public Short getShortParam(String paramName) {
         String paramValue = this.getStringParam(paramName);
-        if (paramValue == null) return null;
+        if (paramValue == null) {
+            return null;
+        }
         return Short.valueOf(paramValue);
     }
 

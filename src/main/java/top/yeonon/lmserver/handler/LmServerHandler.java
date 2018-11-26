@@ -58,9 +58,9 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
     private void sendHtml(LmResponse response, String path) {
         String fileName = LmServerHandler.class.getResource("/").getPath() + STATIC_PATH + path;
         File file = new File(fileName);
-        if (file.exists())
+        if (file.exists()) {
             response.setContent(file).setContentType(LmResponse.ContentTypeValue.HTML_CONTENT).send();
-        else {
+        } else {
             response.sendError("404 Not Found", HttpResponseStatus.NOT_FOUND);
 
         }

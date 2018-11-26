@@ -1,6 +1,8 @@
 package top.yeonon.lmserver.utils;
 
 /**
+ *
+ * 检查类文件是否是Java8编译的
  * @Author yeonon
  * @date 2018/11/25 0025 15:28
  **/

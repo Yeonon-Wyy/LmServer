@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import static org.objectweb.asm.Opcodes.ASM5;
 
 /**
+ * 基于ASM的参数绑定策略
  * @Author yeonon
  * @date 2018/11/25 0025 13:50
  **/
@@ -30,6 +31,15 @@ public class ASMParamBindStrategy extends AbstractParamBindStrategy {
 
     private ASMParamBindStrategy() {}
 
+
+    /**
+     * 采用ASM的技术来解析参数
+     * @param args 参数数组
+     * @param paramSize 参数数组长度
+     * @param request 请求
+     * @param method 方法实例
+     * @param instance 该方法对应的类实例
+     */
     @Override
     protected void putParams(Object[] args, int paramSize, LmWebRequest request, Method method, Object instance) {
         ClassReader reader = null;
@@ -46,10 +56,13 @@ public class ASMParamBindStrategy extends AbstractParamBindStrategy {
                         public void visitLocalVariable(String paramName, String typeName, String s2, Label label, Label label1, int i) {
                             //该方法会处理在方法里创建的本地变量，但是会先处理参数
                             //我们不想获取方法中创建的本地变量，故做此判断（i比索引大1，故需要 i >= paramSize+1）
-                            if (i >= paramSize + 1) return;
+                            if (i >= paramSize + 1) {
+                                return;
+                            }
                             //本地实例方法隐含了this,这里直接隐编码即可
-                            if (paramName.equals("this")) return;
-                            //String typeSimpleName = StringUtils.substring(s1, s1.lastIndexOf("/") + 1, s1.length() - 1);
+                            if ("this".equals(paramName)) {
+                                return;
+                            }
 
                             if (REQUEST_TYPE_NAME.equals(typeName)) {
                                 args[i - 1] = request.getLmRequest();

@@ -5,23 +5,12 @@ import top.yeonon.lmserver.http.LmRequest;
 import top.yeonon.lmserver.http.LmResponse;
 
 /**
- * Interceptor的抽象类，建立抽象类的原因是方便做扩展，可以在抽象类上做很多通用的事情
+ * Interceptor的适配器，和Filter一样，一般都是继承该类来实现拦截功能
  *
  * @Author yeonon
  * @date 2018/6/9 0009 15:29
  **/
-public class AbstractLmInterceptor implements LmInterceptor {
-
-    @Override
-    public boolean preHandler(LmRequest request, LmResponse response) {
-        return false;
-    }
-
-    @Override
-    public void postHandler(LmRequest request, LmResponse response) {
-
-    }
-
+public abstract class LmInterceptorAdapter implements LmInterceptor {
     /**
      * 排序的时候会默认使用这个方法
      *

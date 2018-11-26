@@ -3,7 +3,8 @@ package top.yeonon.lmserver.core.databind;
 import top.yeonon.lmserver.http.LmRequest;
 
 /**
- *
+ * 参数类型处理，主要是适配ASM
+ * 每个实例，看名字就知道了，不多做注释了
  * @Author yeonon
  * @date 2018/9/30 0030 17:40
  **/
@@ -48,8 +49,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Integer val = request.getIntegerParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0;
+            }
             return val;
         }
     },
@@ -57,8 +59,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Long val = request.getLongParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0L;
+            }
             return val;
         }
     },
@@ -66,8 +69,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Float val = request.getFloatParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0.0f;
+            }
             return val;
         }
     },
@@ -75,8 +79,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Double val = request.getDoubleParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0.0d;
+            }
             return val;
         }
     },
@@ -84,8 +89,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Boolean val = request.getBooleanParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return false;
+            }
             return val;
         }
     },
@@ -93,8 +99,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Byte val = request.getByteParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0;
+            }
             return val;
         }
     },
@@ -102,8 +109,9 @@ public enum TypeNameEnum {
         @Override
         public Object handle(String paramName, LmRequest request) {
             Short val = request.getShortParam(paramName);
-            if (val == null)
+            if (val == null) {
                 return 0;
+            }
             return val;
         }
     };

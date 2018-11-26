@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
+/**拦截器
  * @Author yeonon
  * @date 2018/5/25 0025 16:06
  **/

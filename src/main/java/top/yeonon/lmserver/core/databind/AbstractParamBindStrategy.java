@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
+ * 抽象参数绑定策略，采用模板方法模式
  * @Author yeonon
  * @date 2018/11/25 0025 14:21
  **/
@@ -25,6 +26,12 @@ public abstract class AbstractParamBindStrategy implements ParamBindStrategy {
         return args;
     }
 
+    /**
+     * 如果参数是引用类型，即对象，那么就采用这个方法处理
+     * @param clz 该引用类型的类对象
+     * @param request 请求
+     * @return 新创建的实例对象
+     */
     protected final Object processObjectParam(Class<?> clz, LmRequest request) {
         try {
             Object instance = clz.newInstance();
