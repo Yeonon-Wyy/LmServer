@@ -1,7 +1,7 @@
 package top.yeonon.lmserver.core.databind;
 
 
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.lang.reflect.Method;
 

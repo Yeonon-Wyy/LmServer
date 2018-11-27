@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.http;
+package top.yeonon.lmserver.core.http;
 
 /**
  * 将Request和Response封装到一起

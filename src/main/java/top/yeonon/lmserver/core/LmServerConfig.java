@@ -1,9 +1,9 @@
-package top.yeonon.lmserver;
+package top.yeonon.lmserver.core;
 
 
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
-import top.yeonon.lmserver.utils.PropertiesUtil;
+import top.yeonon.lmserver.core.utils.PropertiesUtil;
 
 /**
  *

@@ -1,6 +1,6 @@
 package top.yeonon.lmserver.core.databind;
 
-import top.yeonon.lmserver.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmRequest;
 
 /**
  * 参数类型处理，主要是适配ASM

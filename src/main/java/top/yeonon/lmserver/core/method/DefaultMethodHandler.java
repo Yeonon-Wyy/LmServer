@@ -1,15 +1,13 @@
-package top.yeonon.lmserver.core.controller;
+package top.yeonon.lmserver.core.method;
 
 
-import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.databind.ASMParamBindStrategy;
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmResponse;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 
 
 /**
@@ -21,33 +19,25 @@ import java.lang.reflect.Method;
  * @Author yeonon
  * @date 2018/5/23 0023 18:24
  **/
-public class LmHttpHandler {
+public class DefaultMethodHandler implements MethodHandler {
     //类的一个实例
     private Object classInstance;
 
     //映射的方法
     private Method method;
 
-    private static final Logger log = Logger.getLogger(LmHttpHandler.class);
-
     /**
      * @param classInstance 实例
      * @param method        处理映射的方法
      */
-    public LmHttpHandler(Object classInstance, Method method) {
+    public DefaultMethodHandler(Object classInstance, Method method) {
         this.classInstance = classInstance;
         this.method = method;
     }
 
-    /**
-     * 调用方法,并产生返回值
-     *
-     * @param request 这个参数是必须的
-     * @return 调用method.invoke()的返回值
-     * @throws InvocationTargetException InvocationTargetException
-     * @throws IllegalAccessException    IllegalAccessException
-     */
-    public Object execute(LmRequest request, LmResponse response) throws InvocationTargetException, IllegalAccessException {
+    @Override
+    public Object execute(LmRequest request, LmResponse response)
+            throws InvocationTargetException, IllegalAccessException {
         Object res = null;
         Object[] args;
         //TODO 这里有个问题，当用户使用框架的时候，无法得知是否有用到-parameters参数，现在暂时先搁置，后面再回来做

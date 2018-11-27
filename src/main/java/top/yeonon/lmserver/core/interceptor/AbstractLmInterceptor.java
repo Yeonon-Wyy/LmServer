@@ -1,8 +1,6 @@
-package top.yeonon.lmserver.interceptor;
+package top.yeonon.lmserver.core.interceptor;
 
 import top.yeonon.lmserver.core.annotation.Interceptor;
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
 
 /**
  * Interceptor的适配器，和Filter一样，一般都是继承该类来实现拦截功能
@@ -10,7 +8,7 @@ import top.yeonon.lmserver.http.LmResponse;
  * @Author yeonon
  * @date 2018/6/9 0009 15:29
  **/
-public abstract class LmInterceptorAdapter implements LmInterceptor {
+public abstract class AbstractLmInterceptor implements LmInterceptor {
     /**
      * 排序的时候会默认使用这个方法
      *

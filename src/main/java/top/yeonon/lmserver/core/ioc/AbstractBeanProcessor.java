@@ -3,7 +3,7 @@ package top.yeonon.lmserver.core.ioc;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.annotation.Bean;
 import top.yeonon.lmserver.core.annotation.Configuration;
-import top.yeonon.lmserver.utils.ClassUtil;
+import top.yeonon.lmserver.core.utils.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

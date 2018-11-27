@@ -3,9 +3,9 @@ package top.yeonon.lmserver.core.ioc;
 import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.annotation.*;
-import top.yeonon.lmserver.core.controller.LmHttpHandler;
-import top.yeonon.lmserver.filter.LmFilter;
-import top.yeonon.lmserver.interceptor.LmInterceptor;
+import top.yeonon.lmserver.core.method.DefaultMethodHandler;
+import top.yeonon.lmserver.core.filter.LmFilter;
+import top.yeonon.lmserver.core.interceptor.LmInterceptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -25,7 +25,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
 
 
     //http handler maps
-    private static final Map<String, LmHttpHandler> httpHandlerMaps = new HashMap<>();
+    private static final Map<String, DefaultMethodHandler> httpHandlerMaps = new HashMap<>();
 
     //filter maps
     private static final Map<String, List<LmFilter> > filterMaps = new HashMap<>();
@@ -144,7 +144,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
                     if (httpHandlerMaps.get(url) == null) {
                         log.info("加载requestMapping : url is " + url);
                         //构造映射关系
-                        httpHandlerMaps.put(url, new LmHttpHandler(beanInstance, method));
+                        httpHandlerMaps.put(url, new DefaultMethodHandler(beanInstance, method));
                     } else {
                         log.info("已经做过该Url的映射");
                     }
@@ -194,7 +194,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
 
 
 
-    public static LmHttpHandler getHandler(String url) {
+    public static DefaultMethodHandler getHandler(String url) {
         return httpHandlerMaps.get(url);
     }
 

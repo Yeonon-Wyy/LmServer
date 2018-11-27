@@ -1,6 +1,6 @@
-package top.yeonon.lmserver.filter;
+package top.yeonon.lmserver.core.filter;
 
-import top.yeonon.lmserver.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmRequest;
 
 /**
  * 过滤器接口，一般在使用的时候不会直接实现该方法，大多是继承@LmFilterAdapter适配器类

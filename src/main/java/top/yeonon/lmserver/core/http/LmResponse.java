@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.http;
+package top.yeonon.lmserver.core.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

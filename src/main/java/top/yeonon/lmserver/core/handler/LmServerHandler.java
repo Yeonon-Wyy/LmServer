@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.handler;
+package top.yeonon.lmserver.core.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,11 +8,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.core.controller.LmHttpHandler;
+import top.yeonon.lmserver.core.method.DefaultMethodHandler;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmResponse;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -78,7 +78,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @throws IllegalAccessException
      */
     private void sendNormalContent(LmRequest request, LmResponse response, String path) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
-        LmHttpHandler handler = DefaultBeanProcessor.getHandler(path.trim());
+        DefaultMethodHandler handler = DefaultBeanProcessor.getHandler(path.trim());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
         if (handler != null) {
             Object message = handler.execute(request, response);

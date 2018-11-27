@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.http;
+package top.yeonon.lmserver.core.http;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;

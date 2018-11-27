@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.filter;
+package top.yeonon.lmserver.core.filter;
 
 import top.yeonon.lmserver.core.annotation.Filter;
 
@@ -7,7 +7,7 @@ import top.yeonon.lmserver.core.annotation.Filter;
  * @Author yeonon
  * @date 2018/6/9 0009 14:58
  **/
-public abstract class LmFilterAdapter implements LmFilter {
+public abstract class AbstractLmFilter implements LmFilter {
 
     /**
      * 排序的时候会默认使用这个方法

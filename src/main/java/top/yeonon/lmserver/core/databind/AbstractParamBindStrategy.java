@@ -1,8 +1,8 @@
 package top.yeonon.lmserver.core.databind;
 
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.utils;
+package top.yeonon.lmserver.core.utils;
 
 /**
  *

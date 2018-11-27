@@ -1,7 +1,7 @@
-package top.yeonon.lmserver.interceptor;
+package top.yeonon.lmserver.core.interceptor;
 
-import top.yeonon.lmserver.http.LmRequest;
-import top.yeonon.lmserver.http.LmResponse;
+import top.yeonon.lmserver.core.http.LmRequest;
+import top.yeonon.lmserver.core.http.LmResponse;
 
 /**
  * LmInterceptor接口，一般不直接实现该接口，大多是继承@LmInterceptorAdapter适配器

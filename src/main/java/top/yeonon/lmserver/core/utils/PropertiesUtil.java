@@ -1,4 +1,4 @@
-package top.yeonon.lmserver.utils;
+package top.yeonon.lmserver.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;

@@ -2,7 +2,7 @@ package top.yeonon.lmserver.core.databind;
 
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -17,9 +17,9 @@ public class PrimevalParamStrategy extends AbstractParamBindStrategy {
 
     private static final Logger log = Logger.getLogger(PrimevalParamStrategy.class);
 
-    protected static final String REQUEST_TYPE_NAME = "top.yeonon.lmserver.http.LmRequest";
+    protected static final String REQUEST_TYPE_NAME = "top.yeonon.lmserver.core.http.LmRequest";
 
-    protected static final String RESPONSE_TYPE_NAME = "top.yeonon.lmserver.http.LmResponse";
+    protected static final String RESPONSE_TYPE_NAME = "top.yeonon.lmserver.core.http.LmResponse";
 
     public static final PrimevalParamStrategy INSTANCE = new PrimevalParamStrategy();
 

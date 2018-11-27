@@ -7,7 +7,7 @@ import jdk.internal.org.objectweb.asm.MethodVisitor;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.exception.LmServerParamErrorException;
 import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
-import top.yeonon.lmserver.http.LmWebRequest;
+import top.yeonon.lmserver.core.http.LmWebRequest;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
