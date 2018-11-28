@@ -1,5 +1,8 @@
 package top.yeonon.lmserver.core.annotation;
 
+
+import top.yeonon.lmserver.core.http.LmRequest.LMHttpMethod;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,5 +15,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RequestMapping {
+
+    /**
+     * 请求路径
+     * @return
+     */
     String[] value() default {};
+
+    /**
+     * 请求方法
+     * @return
+     */
+    LMHttpMethod method() default LMHttpMethod.GET;
 }

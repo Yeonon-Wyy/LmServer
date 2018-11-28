@@ -13,6 +13,7 @@ import top.yeonon.lmserver.core.ioc.DefaultBeanProcessor;
 import top.yeonon.lmserver.core.http.LmRequest;
 import top.yeonon.lmserver.core.http.LmResponse;
 import top.yeonon.lmserver.core.http.LmWebRequest;
+import top.yeonon.lmserver.core.method.MethodHandler;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -78,7 +79,7 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
      * @throws IllegalAccessException
      */
     private void sendNormalContent(LmRequest request, LmResponse response, String path) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
-        DefaultMethodHandler handler = DefaultBeanProcessor.getHandler(path.trim());
+        MethodHandler handler = DefaultBeanProcessor.getHandler(path.trim(), request.getMethod());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
         if (handler != null) {
             Object message = handler.execute(request, response);

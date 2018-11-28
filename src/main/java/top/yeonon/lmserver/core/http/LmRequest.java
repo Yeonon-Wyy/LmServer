@@ -24,6 +24,7 @@ public class LmRequest {
 
     private FullHttpRequest nettyRequest;
 
+
     private String path;
     private String ip;
 
@@ -373,8 +374,8 @@ public class LmRequest {
      *
      * @return 请求方法
      */
-    public HttpMethod getMethod() {
-        return nettyRequest.method();
+    public LMHttpMethod getMethod() {
+        return LMHttpMethod.getMethod(nettyRequest.method().name());
     }
 
     /**
@@ -386,12 +387,35 @@ public class LmRequest {
         return this.getMethod().toString();
     }
 
+
     /**
-     *
-     * @param ctx ChannelHandler上下文
-     * @param nettyRequest FullHttpRequest实例
-     * @return
+     * 请求方法枚举类（Netty的HttpMethod不是枚举，无法用在注解中）
      */
+    public enum  LMHttpMethod {
+        GET("GET"),POST("POST"),PUT("PUT"),DELETE("DELETE"),
+        OPTIONS("OPTIONS"),HEAD("HEAD"),PATCH("PATCH"),
+        TRACE("TRACE"),CONNECT("CONNECT");
+
+
+        private String name;
+
+        LMHttpMethod(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static LMHttpMethod getMethod(String name) {
+            for (LMHttpMethod method : values()) {
+                if (method.getName().equals(name)) {
+                    return method;
+                }
+            }
+            return null;
+        }
+    }
 
 /**-----------------------------------------------------------------------------------------------------------------------------*/
 

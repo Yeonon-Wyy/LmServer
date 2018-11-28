@@ -3,17 +3,17 @@ package top.yeonon.lmserver.core.ioc;
 import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.annotation.*;
+import top.yeonon.lmserver.core.exception.RequestMethodRepeatException;
+import top.yeonon.lmserver.core.http.LmRequest.LMHttpMethod;
 import top.yeonon.lmserver.core.method.DefaultMethodHandler;
 import top.yeonon.lmserver.core.filter.LmFilter;
 import top.yeonon.lmserver.core.interceptor.LmInterceptor;
+import top.yeonon.lmserver.core.method.MethodHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author yeonon
@@ -24,11 +24,20 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
     private static final Logger log = Logger.getLogger(DefaultBeanProcessor.class);
 
 
-    //http handler maps
-    private static final Map<String, DefaultMethodHandler> httpHandlerMaps = new HashMap<>();
+    /**
+     * 这里的数据结构有些复杂，稍微解释一下:
+     *
+     * 首先，这是一个Map，键是String类型的URL，值是一个List列表
+     * 然后，List列表的元素是Pair元组类型的，该Pair是由请求方法（GET,POST等）和对应的MethodHandler构成
+     * 最后，查找的时候先根据URL查找，拿到对应的List，然后在根据请求方法查找对应的MethodHandler
+     *
+     * 注：这里用到了Pair元组类型，这是框架中自写的一个类（JDK中没有自带类似功能的组件）。
+     */
+    private static final Map<String, List<Pair<LMHttpMethod, MethodHandler>>> httpHandlerMaps = new HashMap<>();
+
 
     //filter maps
-    private static final Map<String, List<LmFilter> > filterMaps = new HashMap<>();
+    private static final Map<String, List<LmFilter>> filterMaps = new HashMap<>();
 
     //interceptor maps
     private static final Map<String, List<LmInterceptor>> interceptorMaps = new HashMap<>();
@@ -43,6 +52,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
     }
 
     //核心方法
+
     /**
      * 处理容器中的所有Bean，主要是分类，依赖注入等
      */
@@ -58,8 +68,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
                     clz.isAnnotationPresent(Interceptor.class)) {
                 //如果是拦截器，则执行拦截器的处理逻辑
                 processInterceptor(clz, beanInstance);
-            }
-            else if (LmFilter.class.isAssignableFrom(clz) &&
+            } else if (LmFilter.class.isAssignableFrom(clz) &&
                     clz.isAnnotationPresent(Filter.class)) {
                 //如果是Filter，则执行对Filter的处理逻辑
                 processFilter(clz, beanInstance);
@@ -83,10 +92,10 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
     }
 
 
-
     /**
      * 实现依赖注入
-     * @param clz 类
+     *
+     * @param clz          类
      * @param beanInstance 类实例
      */
     private void processBeanWire(Class<?> clz, Object beanInstance) {
@@ -121,9 +130,11 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
 
     /**
      * 对Controller处理
-     * @param clz 类
+     *
+     * @param clz          类
      * @param beanInstance 类实例
      */
+    @SuppressWarnings("unchecked")
     private void processController(Class<?> clz, Object beanInstance) {
 
         log.info("加载controller ： " + clz.getName());
@@ -136,27 +147,51 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
             if (method != null && method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping requestMapping = method.
                         getAnnotation(RequestMapping.class);
-                //拿到注解上的值（Url集合）
+                //拿到注解上Url集合
                 String[] urls = requestMapping.value();
+                //拿到注解上的请求方法
+                LMHttpMethod requestMethod = requestMapping.method();
                 //遍历url集合
                 for (String url : urls) {
-                    //如果httpHandlerMaps没有这个url，就往里面添加 url -> httpHandler映射
+                    //创建一个Pair，该Pair是由请求方法以及MethodHandler构成的
+                    Pair<LMHttpMethod, MethodHandler> pair =
+                            new Pair<>(requestMethod,
+                                    new DefaultMethodHandler(beanInstance, method));
                     if (httpHandlerMaps.get(url) == null) {
                         log.info("加载requestMapping : url is " + url);
-                        //构造映射关系
-                        httpHandlerMaps.put(url, new DefaultMethodHandler(beanInstance, method));
+                        //构造映射关系，如果是第一次碰到该URL，那么就创建一个新的List
+                        httpHandlerMaps.put(url, Lists.newArrayList(pair));
                     } else {
-                        log.info("已经做过该Url的映射");
+                        //先检查是否有重复
+                        checkRepeatMethod(url, requestMethod);
+                        httpHandlerMaps.get(url).add(pair);
                     }
                 }
             }
         }
     }
 
+    /**
+     * 检查是否有相同的路径和请求方法的元组已经存在于集合中了
+     * @param url
+     * @param requestMethod
+     */
+    private void checkRepeatMethod(String url, LMHttpMethod requestMethod) {
+        httpHandlerMaps.get(url).forEach(pair -> {
+            if (pair.first().equals(requestMethod)) {
+                //如果有重复，直接抛出运行时异常，结束进程即可
+                throw new RequestMethodRepeatException("同一个路径不得有重复的请求方法！ " +
+                        "重复的请求方法是： " + requestMethod.getName()
+                        + " 对应的路径是 : " + url);
+            }
+        });
+    }
+
 
     /**
      * 处理Interceptor
-     * @param clz 类
+     *
+     * @param clz          类
      * @param beanInstance 类实例
      */
     private void processInterceptor(Class<?> clz, Object beanInstance) {
@@ -168,6 +203,7 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
                 log.info("加载interface " + clz.getName() + "url 是" + url);
                 interceptorMaps.put(url, Lists.newArrayList(interceptorInstance));
             } else {
+
                 interceptorMaps.get(url).add(interceptorInstance);
             }
         }
@@ -175,7 +211,8 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
 
     /**
      * 处理Filter
-     * @param clz 类
+     *
+     * @param clz          类
      * @param beanInstance 类实例
      */
     private void processFilter(Class<?> clz, Object beanInstance) {
@@ -193,9 +230,23 @@ public class DefaultBeanProcessor extends AbstractBeanProcessor {
     }
 
 
-
-    public static DefaultMethodHandler getHandler(String url) {
-        return httpHandlerMaps.get(url);
+    /**
+     * 根据请求路径和请求方法 拿到对应的handler
+     * @param url 请求路径
+     * @param requestMethod 请求方法
+     * @return handler
+     */
+    public static MethodHandler getHandler(String url, LMHttpMethod requestMethod) {
+        if (httpHandlerMaps.get(url) == null) {
+            return null;
+        }
+        //httpHandlerMaps.get(url)返回的是Set类型，遍历查找和请求方法对应的handler即可
+        for (Pair<LMHttpMethod, MethodHandler> pair : httpHandlerMaps.get(url)) {
+            if (pair.first().equals(requestMethod)) {
+                return pair.second();
+            }
+        }
+        return null;
     }
 
     public static List<LmFilter> getFilter(String url) {
