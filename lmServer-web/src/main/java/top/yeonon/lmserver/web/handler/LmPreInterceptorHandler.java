@@ -1,5 +1,6 @@
 package top.yeonon.lmserver.web.handler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -14,7 +15,12 @@ import java.util.List;
  * @Author yeonon
  * @date 2018/5/25 0025 16:17
  **/
+@ChannelHandler.Sharable
 public class LmPreInterceptorHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    public LmPreInterceptorHandler() {}
+
+    public static final LmPreInterceptorHandler INSTANCE = new LmPreInterceptorHandler();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {

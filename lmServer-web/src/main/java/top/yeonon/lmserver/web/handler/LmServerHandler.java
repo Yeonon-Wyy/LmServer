@@ -2,6 +2,7 @@ package top.yeonon.lmserver.web.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -22,8 +23,13 @@ import java.lang.reflect.InvocationTargetException;
  * @Author yeonon
  * @date 2018/5/23 0023 19:14
  **/
+@ChannelHandler.Sharable
 public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
+    private LmServerHandler() {
+    }
+
+    public static final LmServerHandler INSTANCE = new LmServerHandler();
 
     private static final String STATIC_PATH = "static";
 
@@ -48,7 +54,6 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
     /**
      * 发送HTML静态内容
-     *
      *
      * @param response 响应
      * @param path     HTML所在路径
@@ -78,20 +83,18 @@ public class LmServerHandler extends SimpleChannelInboundHandler<FullHttpRequest
     private void sendNormalContent(LmRequest request, LmResponse response, String path) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
         MethodHandler handler = WebBeanProcessor.getHandler(path.trim(), request.getMethod());
         //handler不为null的话，就正常执行url对应的处理方法，并将返回值写回客户端
-        if (handler != null) {
-            Object message = handler.execute(request, response);
-            if (message == null) {
-                //如果消息为null，也许是参数错误，或者服务端出现异常，例如读写数据库异常等
-                response.sendError("服务器异常或者参数错误", HttpResponseStatus.valueOf(500));
-            } else {
-                response.setContent(objectMapper.writeValueAsString(message))
-                        .setContentType(LmResponse.ContentTypeValue.JSON_CONTENT)
-                        .send();
-            }
+
+        //这里实际上已经不需要判断handler是否为null，因为在之前的DispatchHandler已经处理过了
+        Object message = handler.execute(request, response);
+        if (message == null) {
+            //如果消息为null，也许是参数错误，或者服务端出现异常，例如读写数据库异常等
+            response.sendError("服务器异常或者参数错误", HttpResponseStatus.valueOf(500));
         } else {
-            //handler为null，即没有url映射，这个时候应该返回404错误
-            response.sendError("404 Not Found", HttpResponseStatus.NOT_FOUND);
+            response.setContent(objectMapper.writeValueAsString(message))
+                    .setContentType(LmResponse.ContentTypeValue.JSON_CONTENT)
+                    .send();
         }
+
 
     }
 

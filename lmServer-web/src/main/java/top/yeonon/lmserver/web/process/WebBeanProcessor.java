@@ -247,7 +247,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
      * @return handler
      */
     public static MethodHandler getHandler(String url, LmRequest.LMHttpMethod requestMethod) {
-        if (httpHandlerMaps.get(url) == null) {
+        if (getMethodAndMethodHandlerOfPath(url) == null) {
             return null;
         }
         //httpHandlerMaps.get(url)返回的是Set类型，遍历查找和请求方法对应的handler即可
@@ -257,6 +257,10 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
             }
         }
         return null;
+    }
+
+    public static List<Pair<LmRequest.LMHttpMethod, MethodHandler>> getMethodAndMethodHandlerOfPath(String url) {
+        return httpHandlerMaps.get(url);
     }
 
     public static List<LmFilter> getFilter(String url) {

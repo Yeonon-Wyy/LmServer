@@ -9,10 +9,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import org.apache.log4j.Logger;
 import top.yeonon.lmserver.core.exception.EnvironmentException;
-import top.yeonon.lmserver.web.handler.LmAfterInterceptorHandler;
-import top.yeonon.lmserver.web.handler.LmFilterInHandler;
-import top.yeonon.lmserver.web.handler.LmPreInterceptorHandler;
-import top.yeonon.lmserver.web.handler.LmServerHandler;
+import top.yeonon.lmserver.web.handler.*;
 import top.yeonon.lmserver.core.utils.JDKVersionUtil;
 
 import java.net.InetSocketAddress;
@@ -49,11 +46,11 @@ public class LmServerStarter {
                         pipeline.addLast(new ChunkedWriteHandler());
                         pipeline.addLast(new HttpObjectAggregator(16 * 1024));
 
-
-                        pipeline.addLast(new LmPreInterceptorHandler());
-                        pipeline.addLast(new LmFilterInHandler());
-                        pipeline.addLast(new LmServerHandler());
-                        pipeline.addLast(new LmAfterInterceptorHandler());
+                        pipeline.addLast(DispatchHandler.INSTANCE);
+                        pipeline.addLast(LmPreInterceptorHandler.INSTANCE);
+                        pipeline.addLast(LmFilterInHandler.INSTANCE);
+                        pipeline.addLast(LmServerHandler.INSTANCE);
+                        pipeline.addLast(LmAfterInterceptorHandler.INSTANCE);
 
                     }
                 });

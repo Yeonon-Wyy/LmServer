@@ -1,5 +1,6 @@
 package top.yeonon.lmserver.web.handler;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -17,7 +18,12 @@ import java.util.ListIterator;
  * @Author yeonon
  * @date 2018/6/10 0010 15:01
  **/
+@ChannelHandler.Sharable
 public class LmAfterInterceptorHandler extends ChannelOutboundHandlerAdapter {
+
+    private LmAfterInterceptorHandler() {}
+
+    public static final LmAfterInterceptorHandler INSTANCE = new LmAfterInterceptorHandler();
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
