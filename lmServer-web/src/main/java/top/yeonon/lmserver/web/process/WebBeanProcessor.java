@@ -2,9 +2,7 @@ package top.yeonon.lmserver.web.process;
 
 import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.core.annotation.Autowire;
-import top.yeonon.lmserver.core.annotation.Bean;
-import top.yeonon.lmserver.core.annotation.Interceptor;
+import top.yeonon.lmserver.web.annotation.Interceptor;
 import top.yeonon.lmserver.core.exception.RequestMethodRepeatException;
 import top.yeonon.lmserver.web.annotation.Controller;
 import top.yeonon.lmserver.web.annotation.Filter;
@@ -16,9 +14,6 @@ import top.yeonon.lmserver.core.ioc.Pair;
 import top.yeonon.lmserver.web.method.DefaultMethodHandler;
 import top.yeonon.lmserver.web.method.MethodHandler;
 import top.yeonon.lmserver.web.annotation.RequestMapping;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,8 +81,6 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
                 //如果是controller,则执行对controller的处理逻辑
                 processController(clz, beanInstance);
             }
-
-            processBeanWire(clz, beanInstance);
         });
 
         //处理filter顺序
@@ -103,42 +96,6 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
 
 
     /**
-     * 实现依赖注入
-     *
-     * @param clz          类
-     * @param beanInstance 类实例
-     */
-    private void processBeanWire(Class<?> clz, Object beanInstance) {
-        try {
-            if (clz.getAnnotations() != null) {
-                Annotation[] annotations = clz.getAnnotations();
-                for (Annotation annotation : annotations) {
-                    //判断这个类上的注解是否也是Component(注解上可以有注解)
-                    if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
-                        Field[] fields = clz.getDeclaredFields();
-                        //获取所有字段
-                        for (Field field : fields) {
-                            if (field.isAnnotationPresent(Autowire.class)) {
-                                field.setAccessible(true);
-                                Class<?> fieldClass = field.getType();
-
-                                if (super.getBeanMaps().get(fieldClass) != null) {
-                                    //如果容器中存在这个字段的类，则将其赋值
-                                    field.set(beanInstance, super.getBeanMaps().get(fieldClass));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (IllegalAccessException e) {
-            log.error(e.getCause().toString());
-        }
-
-    }
-
-
-    /**
      * 对Controller处理
      *
      * @param clz          类
@@ -147,7 +104,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
     @SuppressWarnings("unchecked")
     private void processController(Class<?> clz, Object beanInstance) {
 
-        log.info("加载controller ： " + clz.getName());
+        log.info("load controller ： " + clz.getName());
         //实例化该类
         //从class对象中得到该类声明的方法集合
         Method[] methods = clz.getDeclaredMethods();
@@ -168,7 +125,6 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
                             new Pair<>(requestMethod,
                                     new DefaultMethodHandler(beanInstance, method));
                     if (httpHandlerMaps.get(url) == null) {
-                        log.info("加载requestMapping : url is " + url);
                         //构造映射关系，如果是第一次碰到该URL，那么就创建一个新的List
                         httpHandlerMaps.put(url, Lists.newArrayList(pair));
                     } else {
@@ -176,6 +132,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
                         checkRepeatMethod(url, requestMethod);
                         httpHandlerMaps.get(url).add(pair);
                     }
+                    log.info("load requestMapping : mapping is  {" + url + " : " + requestMethod.getName() + "}");
                 }
             }
         }
@@ -190,9 +147,9 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
         httpHandlerMaps.get(url).forEach(pair -> {
             if (pair.first().equals(requestMethod)) {
                 //如果有重复，直接抛出运行时异常，结束进程即可
-                throw new RequestMethodRepeatException("同一个路径不得有重复的请求方法！ " +
-                        "重复的请求方法是： " + requestMethod.getName()
-                        + " 对应的路径是 : " + url);
+                throw new RequestMethodRepeatException("don't add repeat request method on same path！ " +
+                        "repeat request method is： " + requestMethod.getName()
+                        + " and the path is: " + url);
             }
         });
     }
@@ -210,7 +167,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
         String[] urls = interceptor.value();
         for (String url : urls) {
             if (interceptorMaps.get(url) == null) {
-                log.info("加载interface " + clz.getName() + "url 是" + url);
+                log.info("load interceptor " + clz.getName() + "and the path is" + url);
                 interceptorMaps.put(url, Lists.newArrayList(interceptorInstance));
             } else {
 
@@ -231,7 +188,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
         String[] urls = filter.value();
         for (String url : urls) {
             if (filterMaps.get(url) == null) {
-                log.info("加载filter " + clz.getName() + " 要过滤的url是 ： " + url);
+                log.info("load filter " + clz.getName() + " and the url is ： " + url);
                 filterMaps.put(url, Lists.newArrayList(filterInstance));
             } else {
                 filterMaps.get(url).add(filterInstance);

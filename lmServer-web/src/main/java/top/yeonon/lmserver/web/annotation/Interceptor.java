@@ -1,4 +1,6 @@
-package top.yeonon.lmserver.core.annotation;
+package top.yeonon.lmserver.web.annotation;
+
+import top.yeonon.lmserver.core.annotation.Bean;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

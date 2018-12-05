@@ -1,11 +1,13 @@
 package top.yeonon.lmserver.core.ioc;
 
 import org.apache.log4j.Logger;
+import top.yeonon.lmserver.core.annotation.Autowire;
 import top.yeonon.lmserver.core.annotation.Bean;
 import top.yeonon.lmserver.core.annotation.Configuration;
 import top.yeonon.lmserver.core.utils.ClassUtil;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -52,15 +54,18 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
                         //如果是普通的组件，那么就做对应的处理
                         Annotation[] annotations = clz.getAnnotations();
                         for (Annotation annotation : annotations) {
-
                             if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
                                 beanMaps.put(clz, clz.newInstance());
                             }
                         }
                     }
                 }
-
             }
+
+            //处理依赖注入
+            beanMaps.forEach(this::processBeanWire);
+
+
 
         } catch (IllegalAccessException | InstantiationException e) {
             log.error(e.toString());
@@ -74,9 +79,9 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
             Object configInstance = clz.newInstance();
             if (beanMaps.get(clz) == null) {
                 beanMaps.put(clz, configInstance);
-                log.info("加载Config : " + clz);
+                log.info("load configuration : " + clz);
             } else {
-                log.info("该Config已经被加载过 ： " + clz);
+                log.info("this configuration have been loaded ： " + clz);
             }
 
             //加载有Bean注解的方法（暂时仅支持注解在方法上的Bean）
@@ -89,13 +94,47 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
                 Class<?> returnType = returnInstance.getClass();
                 if (beanMaps.get(returnType) == null) {
                     beanMaps.put(returnType, returnInstance);
-                    log.info("加载Bean ： " + returnType);
+                    log.info("load Bean ： " + returnType);
                 } else {
-                    log.info("该Bean已经被加载过 : " + returnType);
+                    log.info("this Bean has been loaded : " + returnType);
                 }
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 实现依赖注入
+     *
+     * @param clz          类
+     * @param beanInstance 类实例
+     */
+    private void processBeanWire(Class<?> clz, Object beanInstance) {
+        try {
+            if (clz.getAnnotations() != null) {
+                Annotation[] annotations = clz.getAnnotations();
+                for (Annotation annotation : annotations) {
+                    //判断这个类上的注解是否也是Component(注解上可以有注解)
+                    if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
+                        Field[] fields = clz.getDeclaredFields();
+                        //获取所有字段
+                        for (Field field : fields) {
+                            if (field.isAnnotationPresent(Autowire.class)) {
+                                field.setAccessible(true);
+                                Class<?> fieldClass = field.getType();
+
+                                if (getBeanMaps().get(fieldClass) != null) {
+                                    //如果容器中存在这个字段的类，则将其赋值
+                                    field.set(beanInstance, getBeanMaps().get(fieldClass));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            log.error(e.getCause().toString());
         }
     }
 

@@ -1,6 +1,6 @@
 package top.yeonon.lmserver.web.interceptor;
 
-import top.yeonon.lmserver.core.annotation.Interceptor;
+import top.yeonon.lmserver.web.annotation.Interceptor;
 
 /**
  * Interceptor的适配器，和Filter一样，一般都是继承该类来实现拦截功能

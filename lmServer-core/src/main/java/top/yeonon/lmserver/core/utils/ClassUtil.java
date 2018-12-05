@@ -96,7 +96,7 @@ public final class ClassUtil {
                             // 添加到classes
                             classSet.add(Class.forName(packageName + '.' + className));
                         }catch (ClassNotFoundException e){
-                            log.error("添加用户自定义视图类错误 找不到此类的.class文件");
+                            log.error("can't found the class : " + className);
                         }
                     }
                 }

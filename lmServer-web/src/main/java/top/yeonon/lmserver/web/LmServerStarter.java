@@ -72,12 +72,12 @@ public class LmServerStarter {
         checkEnvironment();
 
         LmServerConfig serverConfig = new LmServerConfig(mainClass);
-        log.info("服务器监听端口 ： " + serverConfig.getServerPort());
+        log.info("server listening on port " + serverConfig.getServerPort());
 
         LmServerStarter starter = new LmServerStarter(serverConfig.getServerPort());
         ChannelFuture future = starter.start();
 
-        log.info("启动成功");
+        log.info("server started");
 
         //添加关闭监听器
         Runtime.getRuntime().addShutdownHook(new Thread(starter::stop));
@@ -92,7 +92,7 @@ public class LmServerStarter {
     private static void checkEnvironment() {
         //检查JDK版本，因为项目是基于JDK1.8的，如果低版本的Java可能会出现问题
         if (!JDKVersionUtil.isGreaterJava8()) {
-            throw new EnvironmentException("JDK版本必须不低于1.8");
+            throw new EnvironmentException("JDK version mast great than 1.8");
         }
     }
 }
