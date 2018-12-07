@@ -1,5 +1,6 @@
 package top.yeonon.lmserver.web;
 
+import top.yeonon.lmserver.core.ioc.CoreBeanProcessor;
 import top.yeonon.lmserver.core.utils.PropertiesUtil;
 import top.yeonon.lmserver.web.process.WebBeanProcessor;
 
@@ -30,19 +31,23 @@ public final class LmServerConfig {
         //处理属性值
         processProperties();
 
-        //发现Bean
-        new WebBeanProcessor(scanPackage).processBean(scanWithMultiThread);
+        new CoreBeanProcessor(scanPackage, scanWithMultiThread).processBean();
+
+        //调用Web相关的Bean处理器
+        new WebBeanProcessor().processBean();
     }
 
 
     private void processProperties() {
         final String defaultPackage = mainClass.getPackage().getName();
         final Integer defaultServerPort = 9000;
+
         //默认不开启多线程扫描
         final Boolean defaultScanWithMultiThread = false;
         scanPackage = PropertiesUtil.getStringProperty("scanPackage", defaultPackage);
         serverPort = PropertiesUtil.getIntegerProperty("serverPort", defaultServerPort);
         scanWithMultiThread = PropertiesUtil.getBooleanProperty("scanWithMultiThread", defaultScanWithMultiThread);
+
     }
 
 

@@ -2,6 +2,7 @@ package top.yeonon.lmserver.web.process;
 
 import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
+import top.yeonon.lmserver.core.ioc.CoreBeanProcessor;
 import top.yeonon.lmserver.web.annotation.Interceptor;
 import top.yeonon.lmserver.core.exception.RequestMethodRepeatException;
 import top.yeonon.lmserver.web.annotation.Controller;
@@ -49,10 +50,8 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
 
     private static Map<String, Class<?>> typeMaps = null;
 
-    private final String packageName;
 
-    public WebBeanProcessor(String packageName) {
-        this.packageName = packageName;
+    public WebBeanProcessor() {
         typeMaps = super.getType();
     }
 
@@ -62,11 +61,7 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
      * 处理容器中的所有Bean，主要是分类，依赖注入等
      */
     @Override
-    public void processBean(boolean isMultiThread) {
-
-        //先去处理Bean
-        super.beanProcessor(packageName, isMultiThread);
-
+    public void processBean() {
         //拿到beanMap,然后处理各种注解
         super.getBeanMaps().forEach((clz, beanInstance) -> {
             if (LmInterceptor.class.isAssignableFrom(clz) &&
@@ -170,7 +165,6 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
                 log.info("load interceptor " + clz.getName() + "and the path is" + url);
                 interceptorMaps.put(url, Lists.newArrayList(interceptorInstance));
             } else {
-
                 interceptorMaps.get(url).add(interceptorInstance);
             }
         }
