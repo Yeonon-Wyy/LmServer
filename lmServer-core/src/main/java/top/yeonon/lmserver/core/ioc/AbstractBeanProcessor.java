@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,29 +43,24 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
     public void beanProcessor(String packageName, boolean isMultiThread) {
         //获取该包下的所有类
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName, isMultiThread);
-
-        try {
-            for (Class<?> clz : classSets) {
-                if (clz != null) {
+        classSets.stream()
+                .filter(Objects::nonNull)
+                .forEach(clz -> {
                     classMaps.put(clz.getTypeName(), clz);
-                }
-                //如果该类上没有注解，或者clz为null（有可能）就表明不需要往下执行逻辑
-                if (clz != null && clz.getAnnotations().length != 0) {
-                    //如果是普通的组件，那么就做对应的处理
-                    Annotation[] annotations = clz.getAnnotations();
-                    for (Annotation annotation : annotations) {
-                        if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
-                            beanMaps.put(clz, clz.newInstance());
+                    if (clz.getAnnotations().length != 0) {
+                        //如果是普通的组件，那么就做对应的处理
+                        Annotation[] annotations = clz.getAnnotations();
+                        for (Annotation annotation : annotations) {
+                            if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
+                                try {
+                                    beanMaps.put(clz, clz.newInstance());
+                                } catch (InstantiationException | IllegalAccessException e) {
+                                    log.error(e.getMessage());
+                                }
+                            }
                         }
                     }
-
-                }
-            }
-
-
-        } catch (IllegalAccessException | InstantiationException e) {
-            log.error(e.toString());
-        }
+                });
     }
 
     /**

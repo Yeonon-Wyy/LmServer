@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -45,15 +46,15 @@ public class PropertiesUtil {
     public static Object getProperty(Class<?> returnType, String key) {
         String typeName = returnType.getSimpleName().toUpperCase();
         switch (typeName) {
-            case "STRING": return getStringProperty(key);
-            case "INTEGER": return getIntegerProperty(key);
-            case "INT": return getIntegerProperty(key);
-            case "SHORT": return getShortProperty(key);
-            case "LONG": return getLongProperty(key);
-            case "BYTE": return getByteProperty(key);
-            case "FLOAT": return getFloatProperty(key);
-            case "DOUBLE": return getDoubleProperty(key);
-            case "BOOLEAN": return getBooleanProperty(key);
+            case "STRING": return getStringProperty(key).orElse(null);
+            case "INTEGER": return getIntegerProperty(key).orElse(null);
+            case "INT": return getIntegerProperty(key).orElse(null);
+            case "SHORT": return getShortProperty(key).orElse(null);
+            case "LONG": return getLongProperty(key).orElse(null);
+            case "BYTE": return getByteProperty(key).orElse(null);
+            case "FLOAT": return getFloatProperty(key).orElse(null);
+            case "DOUBLE": return getDoubleProperty(key).orElse(null);
+            case "BOOLEAN": return getBooleanProperty(key).orElse(null);
             default:return null;
         }
     }
@@ -63,12 +64,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return String类型的值（可能为null）
      */
-    public static String getStringProperty(String key) {
-        String value = props.getProperty(key.trim());
-        if (StringUtils.isBlank(value)) {
-            return null;
-        }
-        return value;
+    public static Optional<String> getStringProperty(String key) {
+        Optional<String> value = Optional.ofNullable(props.getProperty(key.trim()));
+        return value.filter(StringUtils::isNotBlank);
     }
 
     /**
@@ -78,11 +76,8 @@ public class PropertiesUtil {
      * @return String类型的值（不为null）
      */
     public static String getStringProperty(String key, String defaultValue) {
-        String value = PropertiesUtil.getStringProperty(key);
-        if (value == null) {
-            value = defaultValue;
-        }
-        return value;
+        Optional<String> value = PropertiesUtil.getStringProperty(key);
+        return value.orElse(defaultValue);
     }
 
 
@@ -91,9 +86,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return Integer类型的值或者null
      */
-    public static Integer getIntegerProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Integer.valueOf(value);
+    public static Optional<Integer> getIntegerProperty(String key) {
+        Optional<String> value =getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Integer.valueOf(v)));
     }
 
 
@@ -104,8 +99,8 @@ public class PropertiesUtil {
      * @return Integer类型的值（不为null）
      */
     public static Integer getIntegerProperty(String key, Integer defaultValue) {
-        Integer value = getIntegerProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Integer> value = getIntegerProperty(key);
+        return value.orElse(defaultValue);
     }
 
     /**
@@ -113,9 +108,9 @@ public class PropertiesUtil {
      * @param key 键值
      * @return
      */
-    public static Long getLongProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Long.parseLong(value);
+    public static Optional<Long> getLongProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Long.valueOf(v)));
     }
 
     /**
@@ -125,8 +120,8 @@ public class PropertiesUtil {
      * @return
      */
     public static Long getLongProperty(String key, Long defaultValue) {
-        Long value = getLongProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Long> value = getLongProperty(key);
+        return value.orElse(defaultValue);
     }
 
     /**
@@ -134,9 +129,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return
      */
-    public static Short getShortProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Short.parseShort(value);
+    public static Optional<Short> getShortProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Short.valueOf(v)));
     }
 
     /**
@@ -146,8 +141,8 @@ public class PropertiesUtil {
      * @return
      */
     public static Short getShortProperty(String key, Short defaultValue) {
-        Short value = PropertiesUtil.getShortProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Short> value =PropertiesUtil.getShortProperty(key);
+        return value.orElse(defaultValue);
     }
 
     /**
@@ -155,9 +150,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return
      */
-    public static Byte getByteProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Byte.parseByte(value);
+    public static Optional<Byte> getByteProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Byte.valueOf(v)));
     }
 
     /**
@@ -167,8 +162,8 @@ public class PropertiesUtil {
      * @return
      */
     public static Byte getByteProperty(String key, Byte defaultValue) {
-        Byte value = getByteProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Byte> value = getByteProperty(key);
+        return value.orElse(defaultValue);
     }
 
     /**
@@ -176,9 +171,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return
      */
-    public static Float getFloatProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Float.parseFloat(value);
+    public static Optional<Float> getFloatProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Float.valueOf(v)));
     }
 
     /**
@@ -188,8 +183,8 @@ public class PropertiesUtil {
      * @return
      */
     public static Float getFloatProperty(String key, Float defaultValue) {
-        Float value = getFloatProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Float> value = getFloatProperty(key);
+        return value.orElse(defaultValue);
     }
 
     /**
@@ -197,9 +192,10 @@ public class PropertiesUtil {
      * @param key 键
      * @return
      */
-    public static Double getDoubleProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Double.parseDouble(value);
+    public static Optional<Double> getDoubleProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Double.valueOf(v)));
+
     }
 
     /**
@@ -209,8 +205,8 @@ public class PropertiesUtil {
      * @return
      */
     public static Double getDoubleProperty(String key, Double defaultValue) {
-        Double value = getDoubleProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Double> value = getDoubleProperty(key);
+        return value.orElse(defaultValue);
     }
 
 
@@ -219,9 +215,9 @@ public class PropertiesUtil {
      * @param key 键
      * @return Boolean类型的值或者null
      */
-    public static Boolean getBooleanProperty(String key) {
-        String value = getStringProperty(key);
-        return value == null ? null : Boolean.valueOf(value);
+    public static Optional<Boolean> getBooleanProperty(String key) {
+        Optional<String> value = getStringProperty(key);
+        return value.flatMap((v) -> Optional.of(Boolean.valueOf(v)));
     }
 
     /**
@@ -231,8 +227,8 @@ public class PropertiesUtil {
      * @return Boolean类型的值
      */
     public static Boolean getBooleanProperty(String key, Boolean defaultValue) {
-        Boolean value = PropertiesUtil.getBooleanProperty(key);
-        return value == null ? defaultValue : value;
+        Optional<Boolean> value = PropertiesUtil.getBooleanProperty(key);
+        return value.orElse(defaultValue);
     }
 
 
