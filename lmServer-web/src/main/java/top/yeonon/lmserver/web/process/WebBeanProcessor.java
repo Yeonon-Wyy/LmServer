@@ -2,24 +2,21 @@ package top.yeonon.lmserver.web.process;
 
 import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.core.ioc.CoreBeanProcessor;
-import top.yeonon.lmserver.web.annotation.Interceptor;
 import top.yeonon.lmserver.core.exception.RequestMethodRepeatException;
+import top.yeonon.lmserver.core.ioc.AbstractBeanProcessor;
+import top.yeonon.lmserver.core.ioc.Pair;
 import top.yeonon.lmserver.web.annotation.Controller;
 import top.yeonon.lmserver.web.annotation.Filter;
+import top.yeonon.lmserver.web.annotation.Interceptor;
+import top.yeonon.lmserver.web.annotation.RequestMapping;
 import top.yeonon.lmserver.web.filter.LmFilter;
 import top.yeonon.lmserver.web.http.LmRequest;
 import top.yeonon.lmserver.web.interceptor.LmInterceptor;
-import top.yeonon.lmserver.core.ioc.AbstractBeanProcessor;
-import top.yeonon.lmserver.core.ioc.Pair;
 import top.yeonon.lmserver.web.method.DefaultMethodHandler;
 import top.yeonon.lmserver.web.method.MethodHandler;
-import top.yeonon.lmserver.web.annotation.RequestMapping;
+
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author yeonon
@@ -202,12 +199,10 @@ public class WebBeanProcessor extends AbstractBeanProcessor {
             return null;
         }
         //httpHandlerMaps.get(url)返回的是Set类型，遍历查找和请求方法对应的handler即可
-        for (Pair<LmRequest.LMHttpMethod, MethodHandler> pair : httpHandlerMaps.get(url)) {
-            if (pair.first().equals(requestMethod)) {
-                return pair.second();
-            }
-        }
-        return null;
+        return httpHandlerMaps.get(url).stream()
+                .filter(pair -> pair.first().equals(requestMethod))
+                .findFirst()
+                .map(Pair::second).orElse(null);
     }
 
     public static List<Pair<LmRequest.LMHttpMethod, MethodHandler>> getMethodAndMethodHandlerOfPath(String url) {

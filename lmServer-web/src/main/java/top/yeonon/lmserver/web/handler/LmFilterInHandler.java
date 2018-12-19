@@ -9,6 +9,7 @@ import top.yeonon.lmserver.web.http.LmRequest;
 import top.yeonon.lmserver.web.process.WebBeanProcessor;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 处理Filter
@@ -30,13 +31,12 @@ public class LmFilterInHandler extends SimpleChannelInboundHandler<FullHttpReque
         //获取请求路径
         String path = request.getPath();
         List<LmFilter> filters = WebBeanProcessor.getFilter(path);
-
         //遍历该Url对应的所有Filter，执行Filter逻辑
         if (filters != null) {
-            for (LmFilter filter : filters) {
-                filter.doFilter(request);
-            }
+            filters.forEach(filter -> filter.doFilter(request));
         }
+
+
         //引用计数+1，因为Request还需要往下传递
         fullHttpRequest.retain();
         ctx.fireChannelRead(fullHttpRequest);

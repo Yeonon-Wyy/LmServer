@@ -9,7 +9,6 @@ import top.yeonon.lmserver.core.exception.LmServerParamErrorException;
 import top.yeonon.lmserver.web.http.LmWebRequest;
 import top.yeonon.lmserver.web.process.WebBeanProcessor;
 
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -26,9 +25,9 @@ public class ASMParamBindStrategy extends AbstractParamBindStrategy {
 
     public static final ASMParamBindStrategy INSTANCE = new ASMParamBindStrategy();
 
-    protected static final String REQUEST_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmRequest;";
+    public static final String REQUEST_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmRequest;";
 
-    protected static final String RESPONSE_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmResponse;";
+    public static final String RESPONSE_TYPE_NAME = "Ltop/yeonon/lmserver/http/LmResponse;";
 
     private ASMParamBindStrategy() {}
 

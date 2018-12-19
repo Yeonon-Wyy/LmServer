@@ -1,21 +1,11 @@
 package top.yeonon.lmserver.core.ioc;
 
 import org.apache.log4j.Logger;
-import top.yeonon.lmserver.core.annotation.Autowire;
 import top.yeonon.lmserver.core.annotation.Bean;
-import top.yeonon.lmserver.core.annotation.Configuration;
-import top.yeonon.lmserver.core.annotation.PropertiesConfiguration;
 import top.yeonon.lmserver.core.utils.ClassUtil;
-import top.yeonon.lmserver.core.utils.PropertiesUtil;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,22 +35,27 @@ public abstract class AbstractBeanProcessor implements BeanProcessor {
         Set<Class<?>> classSets = ClassUtil.getClassFromPackage(packageName, isMultiThread);
         classSets.stream()
                 .filter(Objects::nonNull)
-                .forEach(clz -> {
-                    classMaps.put(clz.getTypeName(), clz);
-                    if (clz.getAnnotations().length != 0) {
-                        //如果是普通的组件，那么就做对应的处理
-                        Annotation[] annotations = clz.getAnnotations();
-                        for (Annotation annotation : annotations) {
-                            if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
-                                try {
-                                    beanMaps.put(clz, clz.newInstance());
-                                } catch (InstantiationException | IllegalAccessException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                        }
-                    }
-                });
+                .forEach(this::processBeanClass);
+    }
+
+    /**
+     * 处理Bean的Class对象
+     *
+     * @param clz
+     */
+    private void processBeanClass(Class<?> clz) {
+        classMaps.put(clz.getTypeName(), clz);
+        //如果是普通的组件，那么就做对应的处理
+        Annotation[] annotations = clz.getAnnotations();
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().isAnnotationPresent(Bean.class)) {
+                try {
+                    beanMaps.put(clz, clz.newInstance());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
     }
 
     /**
