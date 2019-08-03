@@ -3,7 +3,7 @@
 ## 介绍
 LmServer基于Netty实现的一个Web服务器，封装了Netty提供的HttpRequest和HttpResponse，暴露更易于使用的API。
 也仿造了Spring的一些功能，例如基于注解的控制器Controller，依赖注入，也包含了过滤器，拦截器等功能，用户可根据具体的业务扩展接口。
-最后想要说明一点，本项目仅仅是为了学习Netty，Spring等。
+最后想要说明一点，本项目仅仅是为了学习Netty，Spring等。.
 
 ## 依赖
 1. Netty 4.1.9
